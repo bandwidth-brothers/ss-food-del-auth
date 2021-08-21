@@ -1,8 +1,8 @@
-package com.ss.auth.secutiry;
+package com.ss.scrumptious_auth.secutiry;
 
 import com.auth0.jwt.JWT;
-import com.ss.auth.dao.UserRepository;
-import com.ss.auth.entity.User;
+import com.ss.scrumptious_auth.dao.UserRepository;
+import com.ss.scrumptious_auth.entity.User;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

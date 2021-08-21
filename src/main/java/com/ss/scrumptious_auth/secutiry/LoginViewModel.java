@@ -1,4 +1,4 @@
-package com.ss.auth.secutiry;
+package com.ss.scrumptious_auth.secutiry;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,10 +1,8 @@
-package com.ss.auth.secutiry;
+package com.ss.scrumptious_auth.secutiry;
 
-import com.ss.auth.dao.UserRepository;
-import com.ss.auth.entity.User;
+import com.ss.scrumptious_auth.dao.UserRepository;
+import com.ss.scrumptious_auth.entity.User;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

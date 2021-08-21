@@ -1,6 +1,6 @@
-package com.ss.auth.dao;
+package com.ss.scrumptious_auth.dao;
 
-import com.ss.auth.entity.User;
+import com.ss.scrumptious_auth.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

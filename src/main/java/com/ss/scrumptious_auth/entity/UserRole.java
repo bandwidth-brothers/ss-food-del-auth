@@ -1,4 +1,4 @@
-package com.ss.auth.entity;
+package com.ss.scrumptious_auth.entity;
 
 public enum  UserRole {
 

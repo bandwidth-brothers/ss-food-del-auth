@@ -1,8 +1,7 @@
-package com.ss.auth.secutiry;
+package com.ss.scrumptious_auth.secutiry;
 
-import com.ss.auth.dao.UserRepository;
+import com.ss.scrumptious_auth.dao.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

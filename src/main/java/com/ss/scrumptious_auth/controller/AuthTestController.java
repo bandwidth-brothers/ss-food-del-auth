@@ -1,4 +1,4 @@
-package com.ss.auth.controller;
+package com.ss.scrumptious_auth.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
