@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.*;
 
-@Entity
+@Entity(name = "User")
 @Data
 @Builder
 @AllArgsConstructor
