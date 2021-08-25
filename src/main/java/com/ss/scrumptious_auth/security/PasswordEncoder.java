@@ -1,4 +1,4 @@
-package com.smoothstack.scrumptious_auth.security;
+package com.ss.scrumptious_auth.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

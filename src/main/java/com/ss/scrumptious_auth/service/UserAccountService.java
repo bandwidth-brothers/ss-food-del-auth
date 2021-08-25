@@ -1,18 +1,17 @@
-package com.smoothstack.scrumptious_auth.service;
+package com.ss.scrumptious_auth.service;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.smoothstack.scrumptious_auth.dto.CreateCustomerDto;
-import com.smoothstack.scrumptious_auth.entity.Customer;
-import com.smoothstack.scrumptious_auth.entity.User;
-import com.smoothstack.scrumptious_auth.repository.CustomerRepository;
-import com.smoothstack.scrumptious_auth.repository.UserRepository;
-import com.smoothstack.scrumptious_auth.security.PasswordEncoder;
+import com.ss.scrumptious_auth.dao.CustomerRepository;
+import com.ss.scrumptious_auth.dao.UserRepository;
+import com.ss.scrumptious_auth.dto.CreateCustomerDto;
+import com.ss.scrumptious_auth.entity.Customer;
+import com.ss.scrumptious_auth.entity.User;
+import com.ss.scrumptious_auth.security.PasswordEncoder;
 
 @Service
 public class UserAccountService {

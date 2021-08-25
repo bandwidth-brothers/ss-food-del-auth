@@ -1,4 +1,4 @@
-package com.smoothstack.scrumptious_auth.dto;
+package com.ss.scrumptious_auth.dto;
 
 import javax.validation.constraints.Email;
 

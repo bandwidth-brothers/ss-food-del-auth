@@ -1,20 +1,19 @@
 package com.ss.scrumptious_auth.security;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.ss.scrumptious_auth.dao.UserRepository;
-import com.ss.scrumptious_auth.entity.User;
-import com.ss.scrumptious_auth.entity.UserRole;
-import com.ss.scrumptious_auth.secutiry.JwtAuthenticationFilter;
-import com.ss.scrumptious_auth.secutiry.SecurityConstants;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.util.Date;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import static org.mockito.Mockito.when;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,12 +21,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Date;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.ss.scrumptious_auth.dao.UserRepository;
+import com.ss.scrumptious_auth.entity.User;
+import com.ss.scrumptious_auth.entity.UserRole;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

@@ -1,6 +1,7 @@
-package com.smoothstack.scrumptious_auth.entity;
+package com.ss.scrumptious_auth.entity;
 
 import java.sql.Date;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,9 +29,9 @@ public class Customer {
 
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "customerId", updatable = false)
-	private Integer customerId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(columnDefinition = "BINARY(16)", name = "customerId", updatable = false)
+	private UUID customerId;
 	
 	@OneToOne
 	@JoinColumn(name = "userId", referencedColumnName = "userId")

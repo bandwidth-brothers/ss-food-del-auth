@@ -1,4 +1,4 @@
-package com.smoothstack.scrumptious_auth.customer;
+package com.ss.scrumptious_auth.customer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import com.smoothstack.scrumptious_auth.entity.User;
-import com.smoothstack.scrumptious_auth.repository.CustomerRepository;
-import com.smoothstack.scrumptious_auth.repository.UserRepository;
+import com.ss.scrumptious_auth.dao.CustomerRepository;
+import com.ss.scrumptious_auth.dao.UserRepository;
+import com.ss.scrumptious_auth.entity.User;
 
 @DataJpaTest
 public class CustomerRepositoryTest {

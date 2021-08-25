@@ -1,4 +1,4 @@
-package com.smoothstack.scrumptious_auth.customer;
+package com.ss.scrumptious_auth.customer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
@@ -12,13 +12,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.smoothstack.scrumptious_auth.dto.CreateCustomerDto;
-import com.smoothstack.scrumptious_auth.entity.Customer;
-import com.smoothstack.scrumptious_auth.entity.User;
-import com.smoothstack.scrumptious_auth.repository.CustomerRepository;
-import com.smoothstack.scrumptious_auth.repository.UserRepository;
-import com.smoothstack.scrumptious_auth.security.PasswordEncoder;
-import com.smoothstack.scrumptious_auth.service.UserAccountService;
+import com.ss.scrumptious_auth.dao.CustomerRepository;
+import com.ss.scrumptious_auth.dao.UserRepository;
+import com.ss.scrumptious_auth.dto.CreateCustomerDto;
+import com.ss.scrumptious_auth.entity.Customer;
+import com.ss.scrumptious_auth.entity.User;
+import com.ss.scrumptious_auth.security.PasswordEncoder;
+import com.ss.scrumptious_auth.service.UserAccountService;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
