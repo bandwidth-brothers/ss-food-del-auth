@@ -8,7 +8,6 @@ import com.ss.scrumptious_auth.entity.UserRole;
 import com.ss.scrumptious_auth.secutiry.JwtAuthenticationFilter;
 import com.ss.scrumptious_auth.secutiry.SecurityConstants;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -32,55 +31,50 @@ import java.util.Date;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class JwtAuthenticationTests {
-    @Mock
-    static SecurityConstants securityConstants;
+        @Mock
+        static SecurityConstants securityConstants;
 
-    static Date mockJwtExpireDate = new Date(System.currentTimeMillis() + 1_000L);
+        static Date mockJwtExpireDate = new Date(System.currentTimeMillis() + 1_000L);
 
-    @Mock
-    AuthenticationManager authenticationManager;
+        @Mock
+        AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+        @Autowired
+        UserRepository userRepository;
 
-    @Mock
-    HttpServletRequest httpServletRequest;
+        @Mock
+        HttpServletRequest httpServletRequest;
 
-    @Mock
-    HttpServletResponse httpServletResponse;
+        @Mock
+        HttpServletResponse httpServletResponse;
 
-    @Autowired
-    BCryptPasswordEncoder encoder;
+        @Autowired
+        BCryptPasswordEncoder encoder;
 
+        @Test
+        public void authTest() throws IOException, ServletException {
+                when(securityConstants.getSECRET()).thenReturn("MercuryExploration");
+                when(securityConstants.getTOKEN_PREFIX()).thenReturn("Bearer ");
+                when(securityConstants.getHEADER_STRING()).thenReturn("Authorization");
+                when(securityConstants.getExpirationDate()).thenReturn(mockJwtExpireDate);
 
-    @Test
-    public void authTest() throws IOException, ServletException {
-        when(securityConstants.getSECRET()).thenReturn("MercuryExploration");
-        when(securityConstants.getTOKEN_PREFIX()).thenReturn("Bearer ");
-        when(securityConstants.getHEADER_STRING()).thenReturn("Authorization");
-        when(securityConstants.getExpirationDate()).thenReturn(mockJwtExpireDate);
+                User user = User.builder().email("test@test.com").password(encoder.encode("123")).username("Peter")
+                                .user_role(UserRole.ADMIN).build();
+                // userRepository.save(user);
 
+                String token = JWT.create().withSubject(user.getUsername()).withExpiresAt(mockJwtExpireDate)
+                                .sign(Algorithm.HMAC512(securityConstants.getSECRET().getBytes()));
 
-        User user = User.builder().email("test@test.com").password(encoder.encode("123"))
-                .username("Peter").userRole(UserRole.ADMIN).build();
-//        userRepository.save(user);
+                Authentication mockAuthResult = Mockito.mock(Authentication.class);
+                when(mockAuthResult.getPrincipal()).thenReturn(user);
+                JwtAuthenticationFilter authenticationFilter = new JwtAuthenticationFilter(authenticationManager,
+                                securityConstants);
 
-        String token = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(mockJwtExpireDate)
-                .sign(Algorithm.HMAC512(securityConstants.getSECRET().getBytes()));
+                authenticationFilter.successfulAuthentication(httpServletRequest, httpServletResponse,
+                                Mockito.mock(FilterChain.class), mockAuthResult);
 
-        Authentication mockAuthResult = Mockito.mock(Authentication.class);
-        when(mockAuthResult.getPrincipal()).thenReturn(user);
-        JwtAuthenticationFilter authenticationFilter = new JwtAuthenticationFilter(authenticationManager, securityConstants);
+                Mockito.verify(httpServletResponse).addHeader("Authorization", "Bearer " + token);
 
-        authenticationFilter.successfulAuthentication(httpServletRequest,
-                httpServletResponse,
-                Mockito.mock(FilterChain.class),
-                mockAuthResult);
-
-        Mockito.verify(httpServletResponse).addHeader("Authorization", "Bearer " + token);
-
-    }
+        }
 
 }

@@ -17,9 +17,21 @@ public class SecurityConstants {
     private String EXPIRATION_DURATION; // 10 days
     private String TOKEN_PREFIX;
     private String HEADER_STRING;
+    private String endpoint;
+    private String jwtSecret;
+    private String jwtHeaderName;
+    private String jwtHeaderPrefix;
+    private String jwtIssuer;
+    private long jwtExpirationDuration;
+    private String authorityClaimKey;
+    private String userIdClaimKey;
 
     public Date getExpirationDate() {
         return new Date(System.currentTimeMillis() + Long.valueOf(this.EXPIRATION_DURATION.replaceAll("_", "")));
+    }
+
+    public Date getExpiresAt() {
+        return new Date(System.currentTimeMillis() + jwtExpirationDuration);
     }
 
 }

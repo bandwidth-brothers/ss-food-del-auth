@@ -1,11 +1,8 @@
 package com.ss.scrumptious_auth.entity;
 
-public enum  UserRole {
+public enum UserRole {
 
-    CUSTOMER("ROLE_CUSTOMER"),
-    EMPLOYEE("ROLE_EMPLOYEE"),
-    ADMIN("ROLE_ADMIN");
-
+    CUSTOMER("ROLE_CUSTOMER"), DRIVER("ROLE_DRIVER"), ADMIN("ROLE_ADMIN");
 
     private final String roleName;
 

@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -34,27 +36,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .headers().frameOptions().sameOrigin().and()
+        http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().headers().frameOptions().sameOrigin().and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), securityConstants))
-                .addFilter(new JwtAuthenticationVerificationFilter(authenticationManager(), userRepository, securityConstants))
-                .authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/login").permitAll()
-                .antMatchers("/h2-console/*").permitAll()
-//                .antMatchers("/api/test/*").permitAll()
-//                .antMatchers("/api/management/*").hasRole("MANAGER")
-//                .antMatchers("/api/admin/*").hasRole("ADMIN")
+                .addFilter(new JwtAuthenticationVerificationFilter(authenticationManager(), userRepository,
+                        securityConstants))
+                .authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll().antMatchers("/h2-console/*")
+                .permitAll().antMatchers("/api/users").permitAll()
+                // .antMatchers("/api/test/*").permitAll()
+                // .antMatchers("/api/management/*").hasRole("MANAGER")
+                // .antMatchers("/api/admin/*").hasRole("ADMIN")
                 .anyRequest().authenticated();
     }
 
     @Bean
-    PasswordEncoder passwordEncoder(){
+    PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    DaoAuthenticationProvider authenticationProvider(){
+    DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setHideUserNotFoundExceptions(false);
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
