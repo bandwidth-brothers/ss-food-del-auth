@@ -7,24 +7,24 @@ INSERT INTO user (
 VALUES (
         'admin@a.com',
         'admin',
-        'admin',
+        '$2a$10$md3DuzMC7sl/xqi.uGtJruNBNoFBZ/Vm9BETr/Qy0kVnKLJTu22pO',
         'ADMIN'
     ),
     (
         'dave@a.com',
         'dave',
-        'dave',
+        '$2a$10$RnoFWxNQVkCFVn3qhlHjj.Kv4gbRjtVMxdsptEXgtiGF.PHjf1Meq',
         'CUSTOMER'
     ),
     (
         'rick@a.com',
         'rick',
-        'rick',
+        '$2a$10$UwaVm5I9992cmLZW.YFA5.Q7tbe2efTHDkpqTK81EuEDc8dQPWoSe',
         'CUSTOMER'
     ),
     (
         'peter@a.com',
         'Peter',
-        '123',
+        '$2a$10$W0kVqWye51uBoqVpwJuDp.0IqidAwwilhPlYshOkZT2wRn.vn1Dje',
         'ADMIN'
     );
