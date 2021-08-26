@@ -62,7 +62,7 @@ public class JwtAuthenticationTests {
 
 
         User user = User.builder().email("test@test.com").password(encoder.encode("123"))
-                .username("Peter").userRole(UserRole.ADMIN).build();
+                .userRole(UserRole.ADMIN).build();
 //        userRepository.save(user);
 
         String token = JWT.create()
