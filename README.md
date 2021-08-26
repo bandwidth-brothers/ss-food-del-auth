@@ -1,1 +1,1 @@
-# ss-food-del-auth
+# ss-scrumptious-auth

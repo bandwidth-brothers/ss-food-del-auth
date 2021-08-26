@@ -1,12 +1,8 @@
 package com.ss.scrumptious_auth.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
+import lombok.*;
+import lombok.Builder.Default;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,59 +13,85 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.*;
 
-@Entity(name = "user")
+@Entity
+@Table(name ="USER")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class User implements UserDetails {
 
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @Column(columnDefinition = "BINARY(16)")
+//    private UUID id;
+//
+//
+//    private String email;
+//    private String password;
+//    private String username;
+//    @Builder.Default
+//    private boolean enabled = true;
+//    private UserRole userRole;
+//
+//    @Transient
+//    @Builder.Default
+//    private boolean accountNonExpired = true;
+//
+//    @Transient
+//    @Builder.Default
+//    private boolean accountNonLocked = true;
+//
+//    @Transient
+//    @Builder.Default
+//    private boolean credentialsNonExpired = true;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "BINARY(16)", name = "userId", updatable = false)
     private UUID userId;
 
-
-    @OneToOne(mappedBy = "user")
+	@OneToOne(mappedBy = "user")
 	private Customer customer;
-    
+
     @NotBlank
-	@Email
+    @Email
     private String email;
-    
+
     @ToString.Exclude
-	@EqualsAndHashCode.Exclude
-	@NotBlank
+    @EqualsAndHashCode.Exclude
+    @NotBlank
     private String password;
-	
-    private UserRole userRole;
 
-	
-	@Column(name="createdAt", nullable = false, updatable = false)
-	@CreationTimestamp
-	private Timestamp createdAt;
-	
-	@Column(name="updatedAt", nullable = false)
-	@UpdateTimestamp
-	private Timestamp updatedAt;
-    
-	@Builder.Default
-    @Transient
-    private boolean accountNonExpired = true;
+    @Default
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole = UserRole.DEFAULT;
 
-	@Builder.Default
-    @Transient
-    private boolean accountNonLocked = true;
+    @Column(name="createdAt", updatable = false)
+    @CreationTimestamp
+    private ZonedDateTime creationDateTime;
+
+    @UpdateTimestamp
+	@Column(name="updatedAt")
+    private ZonedDateTime lastModifiedDateTime;
+
+   
 
 	@Builder.Default
-    @Transient
+	private boolean accountNonExpired = true;
+	@Builder.Default
+	private boolean accountNonLocked = true;	
+	@Builder.Default
     private boolean credentialsNonExpired = true;
+    @Builder.Default
+    private boolean enabled = true;
+    @Builder.Default
+    private boolean confirmed = false;
 
-	@Builder.Default
-	private boolean enabled = true;
+
 	
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -80,9 +102,9 @@ public class User implements UserDetails {
         }
         return set;
     }
-    
+
     @Override
     public String getUsername() {
-      return email;
+        return email;
     }
 }

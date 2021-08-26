@@ -2,6 +2,7 @@ package com.ss.scrumptious_auth.entity;
 
 public enum  UserRole {
 
+    DEFAULT("ROLE_DEFAULT"),
     CUSTOMER("ROLE_CUSTOMER"),
     EMPLOYEE("ROLE_EMPLOYEE"),
     ADMIN("ROLE_ADMIN");

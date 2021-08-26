@@ -11,7 +11,6 @@ import com.ss.scrumptious_auth.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
-    Optional<User> findByUsername(String userName);
     
     Optional<User> findByEmail(String email);
 }
