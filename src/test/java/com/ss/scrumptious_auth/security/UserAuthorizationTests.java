@@ -89,9 +89,9 @@ public class UserAuthorizationTests {
                 .andExpect(status().isForbidden());
     }
 
-    @Test
-    @WithMockUser(roles = {})
-    public void test_OnlyAllowedByAll() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/api/users").accept(MediaType.ALL)).andExpect(status().isOk());
-    }
+    // @Test
+    // @WithMockUser(roles = {})
+    // public void test_OnlyAllowedByAll() throws Exception {
+    //     mvc.perform(MockMvcRequestBuilders.get("/api/users").accept(MediaType.ALL)).andExpect(status().isOk());
+    // }
 }
