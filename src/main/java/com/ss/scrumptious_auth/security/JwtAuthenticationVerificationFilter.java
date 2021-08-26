@@ -1,21 +1,23 @@
-package com.ss.scrumptious_auth.secutiry;
+package com.ss.scrumptious_auth.security;
 
-import com.auth0.jwt.JWT;
-import com.ss.scrumptious_auth.dao.UserRepository;
-import com.ss.scrumptious_auth.entity.User;
+import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
+import com.auth0.jwt.JWT;
+import com.ss.scrumptious_auth.dao.UserRepository;
+import com.ss.scrumptious_auth.entity.User;
 
 public class JwtAuthenticationVerificationFilter extends BasicAuthenticationFilter {
     private UserRepository userRepository;
@@ -64,9 +66,8 @@ public class JwtAuthenticationVerificationFilter extends BasicAuthenticationFilt
         }
 
         // Search in the DB if we find the user by token subject (username)
-        // If so, then grab user details and create spring auth token using username,
-        // pass, authorities/roles
-        User user = userRepository.findByUsername(userName).get();
+        // If so, then grab user details and create spring auth token using username, pass, authorities/roles
+        User user = userRepository.findByEmail(userName).get();
         return new UsernamePasswordAuthenticationToken(userName, null, user.getAuthorities());
     }
 }

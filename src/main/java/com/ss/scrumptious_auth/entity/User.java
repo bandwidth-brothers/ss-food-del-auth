@@ -1,33 +1,39 @@
 package com.ss.scrumptious_auth.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
+import lombok.*;
+import lombok.Builder.Default;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
+import java.time.ZonedDateTime;
 import java.util.*;
 
-@Entity(name = "user")
+@Entity
+@Table(name ="USER")
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    // @Column(columnDefinition = "BINARY(16)")
-    private Integer id;
+    @Column(columnDefinition = "BINARY(16)", name = "userId", updatable = false)
+    private UUID userId;
 
+	@OneToOne(mappedBy = "user")
+	private Customer customer;
+
+    @NotBlank
+    @Email
     private String email;
 
     @ToString.Exclude
@@ -35,44 +41,41 @@ public class User implements UserDetails {
     @NotBlank
     private String password;
 
-    private String username;
-
-    @Builder.Default
+    @Default
     @Enumerated(EnumType.STRING)
-    private UserRole user_role = UserRole.CUSTOMER;
+    private UserRole userRole = UserRole.DEFAULT;
 
+    @Column(name="createdAt", updatable = false)
+    @CreationTimestamp
+    private ZonedDateTime creationDateTime;
+
+    @UpdateTimestamp
+	@Column(name="updatedAt")
+    private ZonedDateTime lastModifiedDateTime;
+
+	@Builder.Default
+	private boolean accountNonExpired = true;
+	@Builder.Default
+	private boolean accountNonLocked = true;	
+	@Builder.Default
+    private boolean credentialsNonExpired = true;
+    @Builder.Default
+    private boolean enabled = true;
+    @Builder.Default
+    private boolean confirmed = false;
+	
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         HashSet<GrantedAuthority> set = new HashSet<>();
-        if (user_role != null) {
-            GrantedAuthority authority = new SimpleGrantedAuthority(user_role.getRole());
+        if (userRole != null) {
+            GrantedAuthority authority = new SimpleGrantedAuthority(userRole.getRole());
             set.add(authority);
         }
         return set;
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        // TODO Auto-generated method stub
-        return true;
+    public String getUsername() {
+        return email;
     }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
 }
