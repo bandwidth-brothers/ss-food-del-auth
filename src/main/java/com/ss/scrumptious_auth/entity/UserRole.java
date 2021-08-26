@@ -5,8 +5,9 @@ public enum  UserRole {
     DEFAULT("ROLE_DEFAULT"),
     CUSTOMER("ROLE_CUSTOMER"),
     EMPLOYEE("ROLE_EMPLOYEE"),
+    DRIVER("ROLE_DRIVER"),
     ADMIN("ROLE_ADMIN");
-
+    
 
     private final String roleName;
 

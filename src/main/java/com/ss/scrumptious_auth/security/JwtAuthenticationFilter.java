@@ -22,27 +22,26 @@ import com.ss.scrumptious_auth.entity.User;
 
 import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+//@Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final SecurityConstants securityConstants;
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, SecurityConstants securityConstants){
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, SecurityConstants securityConstants) {
         super(authenticationManager);
         this.authenticationManager = authenticationManager;
         this.securityConstants = securityConstants;
     }
 
-
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response){
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
         LoginViewModel credentials = null;
         try {
             credentials = new ObjectMapper().readValue(request.getInputStream(), LoginViewModel.class);
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(credentials.getUsername(),
-                    credentials.getPassword(), new ArrayList<>());
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    credentials.getUsername(), credentials.getPassword(), new ArrayList<>());
             Authentication auth = authenticationManager.authenticate(authenticationToken);
             return auth;
         } catch (Exception e) {
@@ -53,13 +52,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                            FilterChain chain, Authentication authResult) throws IOException, ServletException {
+    public void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+            Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
 
-        String token = JWT.create()
-                .withSubject(user.getUsername())
-                .withExpiresAt(securityConstants.getExpirationDate())
+        String token = JWT.create().withSubject(user.getUsername()).withExpiresAt(securityConstants.getExpirationDate())
                 .sign(Algorithm.HMAC512(securityConstants.getSECRET().getBytes()));
 
         response.addHeader(securityConstants.getHEADER_STRING(), securityConstants.getTOKEN_PREFIX() + token);
@@ -67,7 +64,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     public void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                              AuthenticationException failed) throws IOException, ServletException {
+            AuthenticationException failed) throws IOException, ServletException {
         super.unsuccessfulAuthentication(request, response, failed);
         logger.debug("auth failed");
     }

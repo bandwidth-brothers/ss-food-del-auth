@@ -24,17 +24,15 @@ public class JwtAuthenticationVerificationFilter extends BasicAuthenticationFilt
     private final SecurityConstants securityConstants;
 
     public JwtAuthenticationVerificationFilter(AuthenticationManager authenticationManager,
-                                               UserRepository userRepository,
-                                               SecurityConstants securityConstants) {
+            UserRepository userRepository, SecurityConstants securityConstants) {
         super(authenticationManager);
         this.userRepository = userRepository;
         this.securityConstants = securityConstants;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         String header = request.getHeader(securityConstants.getHEADER_STRING());
 
         // If header does not contain BEARER or is null delegate to Spring impl and exit
@@ -43,7 +41,8 @@ public class JwtAuthenticationVerificationFilter extends BasicAuthenticationFilt
             return;
         }
 
-        // If header is present, try grab user principal from database and perform authorization
+        // If header is present, try grab user principal from database and perform
+        // authorization
         Authentication authentication = getAuthenticationToken(request);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -51,20 +50,18 @@ public class JwtAuthenticationVerificationFilter extends BasicAuthenticationFilt
         chain.doFilter(request, response);
     }
 
-    private UsernamePasswordAuthenticationToken getAuthenticationToken(HttpServletRequest request){
+    private UsernamePasswordAuthenticationToken getAuthenticationToken(HttpServletRequest request) {
         String token = request.getHeader(securityConstants.getHEADER_STRING())
-                .replace(securityConstants.getTOKEN_PREFIX(),"");
-        if (token == null){
+                .replace(securityConstants.getTOKEN_PREFIX(), "");
+        if (token == null) {
             return null;
         }
 
         // parse the token and validate it
-        String userName = JWT.require(HMAC512(securityConstants.getSECRET().getBytes()))
-                .build()
-                .verify(token)
+        String userName = JWT.require(HMAC512(securityConstants.getSECRET().getBytes())).build().verify(token)
                 .getSubject();
 
-        if (userName == null){
+        if (userName == null) {
             return null;
         }
 

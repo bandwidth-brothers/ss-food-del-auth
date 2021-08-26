@@ -50,7 +50,6 @@ public class JwtAuthenticationTests {
     @Autowired
     BCryptPasswordEncoder encoder;
 
-
     @Test
     public void authTest() throws IOException, ServletException {
         when(securityConstants.getSECRET()).thenReturn("MercuryExploration");
@@ -58,10 +57,9 @@ public class JwtAuthenticationTests {
         when(securityConstants.getHEADER_STRING()).thenReturn("Authorization");
         when(securityConstants.getExpirationDate()).thenReturn(mockJwtExpireDate);
 
-
         User user = User.builder().email("test@test.com").password(encoder.encode("123"))
                 .userRole(UserRole.ADMIN).build();
-//        userRepository.save(user);
+        // userRepository.save(user);
 
         String token = JWT.create()
                 .withSubject(user.getUsername())
@@ -72,9 +70,9 @@ public class JwtAuthenticationTests {
         when(mockAuthResult.getPrincipal()).thenReturn(user);
         JwtAuthenticationFilter authenticationFilter = new JwtAuthenticationFilter(authenticationManager, securityConstants);
 
-        authenticationFilter.successfulAuthentication(httpServletRequest,
+        authenticationFilter.successfulAuthentication(httpServletRequest, 
                 httpServletResponse,
-                Mockito.mock(FilterChain.class),
+                Mockito.mock(FilterChain.class), 
                 mockAuthResult);
 
         Mockito.verify(httpServletResponse).addHeader("Authorization", "Bearer " + token);

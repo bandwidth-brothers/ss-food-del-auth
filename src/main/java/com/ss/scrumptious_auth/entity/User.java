@@ -24,31 +24,6 @@ import java.util.*;
 @Builder
 public class User implements UserDetails {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    @Column(columnDefinition = "BINARY(16)")
-//    private UUID id;
-//
-//
-//    private String email;
-//    private String password;
-//    private String username;
-//    @Builder.Default
-//    private boolean enabled = true;
-//    private UserRole userRole;
-//
-//    @Transient
-//    @Builder.Default
-//    private boolean accountNonExpired = true;
-//
-//    @Transient
-//    @Builder.Default
-//    private boolean accountNonLocked = true;
-//
-//    @Transient
-//    @Builder.Default
-//    private boolean credentialsNonExpired = true;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(columnDefinition = "BINARY(16)", name = "userId", updatable = false)
@@ -78,8 +53,6 @@ public class User implements UserDetails {
 	@Column(name="updatedAt")
     private ZonedDateTime lastModifiedDateTime;
 
-   
-
 	@Builder.Default
 	private boolean accountNonExpired = true;
 	@Builder.Default
@@ -90,13 +63,11 @@ public class User implements UserDetails {
     private boolean enabled = true;
     @Builder.Default
     private boolean confirmed = false;
-
-
 	
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         HashSet<GrantedAuthority> set = new HashSet<>();
-        if (userRole != null){
+        if (userRole != null) {
             GrantedAuthority authority = new SimpleGrantedAuthority(userRole.getRole());
             set.add(authority);
         }
