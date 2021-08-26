@@ -1,4 +1,4 @@
-package com.ss.scrumptious_auth.secutiry;
+package com.ss.scrumptious_auth.security;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

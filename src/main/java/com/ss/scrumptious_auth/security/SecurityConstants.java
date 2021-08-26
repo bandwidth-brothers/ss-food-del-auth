@@ -1,4 +1,4 @@
-package com.ss.scrumptious_auth.secutiry;
+package com.ss.scrumptious_auth.security;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

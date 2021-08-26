@@ -1,5 +1,6 @@
 package com.ss.scrumptious_auth.entity;
 
+
 import lombok.*;
 import lombok.Builder.Default;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,15 +12,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+
 import java.time.ZonedDateTime;
 import java.util.*;
 
 @Entity
 @Table(name ="USER")
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class User implements UserDetails {
 
 //    @Id
@@ -49,8 +51,11 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "BINARY(16)")
-    private UUID id;
+    @Column(columnDefinition = "BINARY(16)", name = "userId", updatable = false)
+    private UUID userId;
+
+	@OneToOne(mappedBy = "user")
+	private Customer customer;
 
     @NotBlank
     @Email
@@ -65,25 +70,29 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole userRole = UserRole.DEFAULT;
 
-    @Column(updatable = false)
+    @Column(name="createdAt", updatable = false)
     @CreationTimestamp
     private ZonedDateTime creationDateTime;
 
     @UpdateTimestamp
+	@Column(name="updatedAt")
     private ZonedDateTime lastModifiedDateTime;
 
-    @Default
-    private boolean accountNonExpired = true;
-    @Default
-    private boolean accountNonLocked = true;
-    @Default
+   
+
+	@Builder.Default
+	private boolean accountNonExpired = true;
+	@Builder.Default
+	private boolean accountNonLocked = true;	
+	@Builder.Default
     private boolean credentialsNonExpired = true;
-    @Default
+    @Builder.Default
     private boolean enabled = true;
-    @Default
+    @Builder.Default
     private boolean confirmed = false;
 
 
+	
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         HashSet<GrantedAuthority> set = new HashSet<>();

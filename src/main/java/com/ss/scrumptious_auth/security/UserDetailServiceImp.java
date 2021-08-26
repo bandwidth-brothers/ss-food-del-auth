@@ -1,12 +1,14 @@
-package com.ss.scrumptious_auth.secutiry;
+package com.ss.scrumptious_auth.security;
 
-import com.ss.scrumptious_auth.dao.UserRepository;
-import com.ss.scrumptious_auth.entity.User;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.ss.scrumptious_auth.dao.UserRepository;
+import com.ss.scrumptious_auth.entity.User;
+
+import lombok.RequiredArgsConstructor;
 
 
 @Service
@@ -17,6 +19,7 @@ public class UserDetailServiceImp implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s){
+
         User user = userRepository.findByEmail(s).orElseThrow(() -> new UsernameNotFoundException("User account not found."));
 
         return user;
