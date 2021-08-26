@@ -31,7 +31,6 @@ public class UserAccountService {
 	@Transactional
 	public User createNewAccountCustomer(@Valid @RequestBody CreateCustomerDto createCustomerDto) {
 		User user = User.builder()
-				.username(createCustomerDto.getUsername())
 				.email(createCustomerDto.getEmail())
 				.password(createCustomerDto.getPassword())
 				.build();

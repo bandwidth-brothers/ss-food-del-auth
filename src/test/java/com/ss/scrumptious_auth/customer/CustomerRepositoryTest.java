@@ -27,25 +27,9 @@ public class CustomerRepositoryTest {
 	
 	
 	@Test
-	void itShouldFindByUsername() {
-		String username = "customer";
-		User user = User.builder()
-				.username(username)
-				.password("pass")
-				.email("customer@gmail.com")
-				.build();
-		userRepo.save(user);
-		
-		User userFound = userRepo.findByUsername(username).get();
-		
-		assertEquals(user, userFound);
-	}
-	
-	@Test
 	void itShouldFindByEmail() {
 		String email = "customer@gmail.com";
 		User user = User.builder()
-				.username("customer")
 				.password("pass")
 				.email(email)
 				.build();

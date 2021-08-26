@@ -56,7 +56,6 @@ public class CustomerServiceTest {
 				.build();
 		
 		User user = User.builder()
-				.username(customerDto.getUsername())
 				.email(customerDto.getEmail())
 				.password(customerDto.getPassword())
 				.build();

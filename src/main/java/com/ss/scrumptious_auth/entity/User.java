@@ -44,15 +44,9 @@ public class User implements UserDetails {
 	@EqualsAndHashCode.Exclude
 	@NotBlank
     private String password;
-    
-    @NotBlank
-	@Column(nullable = false, unique = true)
-    private String username;
 	
     private UserRole userRole;
 
-    @Column(name="profilePic")
-	private String profilePic;
 	
 	@Column(name="createdAt", nullable = false, updatable = false)
 	@CreationTimestamp
@@ -85,5 +79,10 @@ public class User implements UserDetails {
             set.add(authority);
         }
         return set;
+    }
+    
+    @Override
+    public String getUsername() {
+      return email;
     }
 }
