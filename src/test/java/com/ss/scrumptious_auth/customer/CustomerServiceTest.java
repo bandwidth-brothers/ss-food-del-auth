@@ -11,13 +11,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.ss.scrumptious_auth.dao.CustomerRepository;
 import com.ss.scrumptious_auth.dao.UserRepository;
 import com.ss.scrumptious_auth.dto.CreateCustomerDto;
 import com.ss.scrumptious_auth.entity.Customer;
 import com.ss.scrumptious_auth.entity.User;
-import com.ss.scrumptious_auth.security.PasswordEncoder;
 import com.ss.scrumptious_auth.service.UserAccountService;
 
 @SpringBootTest
@@ -31,7 +31,7 @@ public class CustomerServiceTest {
 	CustomerRepository customerRepository;
 	
 	@Autowired
-	PasswordEncoder encoder;
+	BCryptPasswordEncoder encoder;
 	
 	private UserAccountService userAccountService;
 
