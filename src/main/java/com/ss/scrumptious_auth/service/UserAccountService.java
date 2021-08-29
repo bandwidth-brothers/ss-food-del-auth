@@ -1,5 +1,8 @@
 package com.ss.scrumptious_auth.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -61,4 +64,15 @@ public class UserAccountService {
 		
 		return user;
 	}
+
+	@Transactional
+	public List<User> getAllUsers() {
+		return userRepository.findAll();
+	}
+
+	@Transactional
+	public Optional<User> findUserByEmail(String email) {
+		return userRepository.findByEmail(email);
+	}
+
 }
