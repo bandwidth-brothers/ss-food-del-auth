@@ -1,7 +1,6 @@
 package com.ss.scrumptious_auth.controller;
 
 import java.net.URI;
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,12 +12,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ss.scrumptious_auth.dto.CreateCustomerDto;
 import com.ss.scrumptious_auth.dto.EditUserDto;
 import com.ss.scrumptious_auth.entity.User;
+import com.ss.scrumptious_auth.security.permissions.GetUserByIdPermission;
 import com.ss.scrumptious_auth.service.UserAccountService;
 
 import lombok.RequiredArgsConstructor;
@@ -52,26 +51,7 @@ public class UserAccountController {
 		return ResponseEntity.ok(users);
     }
 
-	@GetMapping("/me")
-	@ResponseBody
-	public ResponseEntity<User> currentUserName(Principal principal) {
-	   	Optional<User> user = userAccountService.findUserByEmail(principal.getName());
-		return ResponseEntity.of(user);
-	}
-
-	@PutMapping("/me")
-	@ResponseBody
-	public ResponseEntity<User> editCurrentUser(Principal principal, @Valid @RequestBody EditUserDto editUserDto) {
-		Optional<User> user = userAccountService.findUserByEmail(principal.getName());
-		if (user.isPresent()) {
-			user.get().setEmail(editUserDto.getEmail());
-			user.get().setPassword(editUserDto.getPassword());
-			return ResponseEntity.ok(userAccountService.updateUser(user.get()));
-		}
-		return ResponseEntity.notFound().build();
-	}
-
-	@PreAuthorize("hasRole('ADMIN')")
+	@GetUserByIdPermission
 	@PutMapping("/{userId}")
 	public ResponseEntity<User> editUserByUUID(@Valid @RequestBody EditUserDto editUserDto, @PathVariable UUID userId) {
 		Optional<User> user = userAccountService.findUserByUUID(userId);
