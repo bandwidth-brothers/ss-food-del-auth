@@ -2,10 +2,12 @@ package com.ss.scrumptious_auth.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -14,16 +16,15 @@ import com.ss.scrumptious_auth.dao.UserRepository;
 import com.ss.scrumptious_auth.dto.CreateCustomerDto;
 import com.ss.scrumptious_auth.entity.Customer;
 import com.ss.scrumptious_auth.entity.User;
-import com.ss.scrumptious_auth.security.PasswordEncoder;
 
 @Service
 public class UserAccountService {
 
 	private UserRepository userRepository;
 	private CustomerRepository customerRepository;
-	private PasswordEncoder passwordEncoder;
+	private BCryptPasswordEncoder passwordEncoder;
 	
-	public UserAccountService(UserRepository userRepository, CustomerRepository customerRepository, PasswordEncoder passwordEncoder ) {
+	public UserAccountService(UserRepository userRepository, CustomerRepository customerRepository, BCryptPasswordEncoder passwordEncoder ) {
 		super();
 		this.userRepository = userRepository;
 		this.customerRepository = customerRepository;
@@ -44,7 +45,7 @@ public class UserAccountService {
 			throw new IllegalStateException("Email is already in use");
 		}
 		
-		String encodedPass = passwordEncoder.bCryptPasswordEncoder().encode(user.getPassword());
+		String encodedPass = passwordEncoder.encode(user.getPassword());
 		
 		user.setPassword(encodedPass);
 		
@@ -65,14 +66,22 @@ public class UserAccountService {
 		return user;
 	}
 
-	@Transactional
 	public List<User> getAllUsers() {
 		return userRepository.findAll();
 	}
 
-	@Transactional
 	public Optional<User> findUserByEmail(String email) {
 		return userRepository.findByEmail(email);
+	}
+
+	public Optional<User> findUserByUUID(UUID uuid) {
+		return userRepository.findById(uuid);
+	}
+
+	public User updateUser(User user) {
+		String encodedPass = passwordEncoder.encode(user.getPassword());
+		user.setPassword(encodedPass);
+		return userRepository.save(user);
 	}
 
 }
