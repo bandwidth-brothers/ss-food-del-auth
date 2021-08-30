@@ -66,23 +66,21 @@ public class UserAccountService {
 		return user;
 	}
 
-	@Transactional
 	public List<User> getAllUsers() {
 		return userRepository.findAll();
 	}
 
-	@Transactional
 	public Optional<User> findUserByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
 
-	@Transactional
 	public Optional<User> findUserByUUID(UUID uuid) {
 		return userRepository.findById(uuid);
 	}
 
-	@Transactional
 	public User updateUser(User user) {
+		String encodedPass = passwordEncoder.encode(user.getPassword());
+		user.setPassword(encodedPass);
 		return userRepository.save(user);
 	}
 
