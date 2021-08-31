@@ -52,6 +52,13 @@ public class UserAccountController {
     }
 
 	@GetUserByIdPermission
+	@GetMapping("/{userId}")
+	public ResponseEntity<User> currentUserName(@PathVariable UUID userId) {
+	   	Optional<User> user = userAccountService.findUserByUUID(userId);
+		return ResponseEntity.of(user);
+	}
+
+	@GetUserByIdPermission
 	@PutMapping("/{userId}")
 	public ResponseEntity<User> editUserByUUID(@Valid @RequestBody EditUserDto editUserDto, @PathVariable UUID userId) {
 		Optional<User> user = userAccountService.findUserByUUID(userId);
