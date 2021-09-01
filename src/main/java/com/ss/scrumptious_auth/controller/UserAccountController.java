@@ -9,21 +9,23 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ss.scrumptious_auth.dto.CreateAdminDto;
 import com.ss.scrumptious_auth.dto.CreateCustomerDto;
+import com.ss.scrumptious_auth.dto.CreateRestaurantOwnerDto;
 import com.ss.scrumptious_auth.dto.EditUserDto;
 import com.ss.scrumptious_auth.entity.User;
 import com.ss.scrumptious_auth.security.permissions.GetUserByIdPermission;
 import com.ss.scrumptious_auth.service.UserAccountService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
@@ -40,7 +42,22 @@ public class UserAccountController {
 		UUID userId = user.getUserId();
 		return ResponseEntity.created(URI.create("/login")).body(userId);
 	}
+	
+	@PostMapping("/restaurants/register")
+	public ResponseEntity<UUID> createNewAccountCustomer(@Valid @RequestBody CreateRestaurantOwnerDto createRestaurantOwnerDto) {
+		User user = userAccountService.createNewAccountRestaurantOwner(createRestaurantOwnerDto);
+		UUID userId = user.getUserId();
+		return ResponseEntity.created(URI.create("/login")).body(userId);
+	}
 
+	@PostMapping("/admin/register")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<UUID> createNewAccountAdmin(@Valid @RequestBody CreateAdminDto createAdminDto) {
+		User user = userAccountService.createNewAccountAdmin(createAdminDto);
+		UUID userId = user.getUserId();
+		return ResponseEntity.created(URI.create("/login")).body(userId);
+	}
+	
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {

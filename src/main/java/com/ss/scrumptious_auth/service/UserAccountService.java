@@ -12,9 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.ss.scrumptious_auth.dao.CustomerRepository;
+import com.ss.scrumptious_auth.dao.RestaurantOwnerRepository;
 import com.ss.scrumptious_auth.dao.UserRepository;
+import com.ss.scrumptious_auth.dto.CreateAdminDto;
 import com.ss.scrumptious_auth.dto.CreateCustomerDto;
+import com.ss.scrumptious_auth.dto.CreateRestaurantOwnerDto;
 import com.ss.scrumptious_auth.entity.Customer;
+import com.ss.scrumptious_auth.entity.RestaurantOwner;
 import com.ss.scrumptious_auth.entity.User;
 import com.ss.scrumptious_auth.entity.UserRole;
 
@@ -23,13 +27,15 @@ public class UserAccountService {
 
 	private UserRepository userRepository;
 	private CustomerRepository customerRepository;
+	private RestaurantOwnerRepository restaurantOwnerRepository;
 	private BCryptPasswordEncoder passwordEncoder;
 	
-	public UserAccountService(UserRepository userRepository, CustomerRepository customerRepository, BCryptPasswordEncoder passwordEncoder ) {
+	public UserAccountService(UserRepository userRepository, CustomerRepository customerRepository, RestaurantOwnerRepository restaurantOwnerRepository, BCryptPasswordEncoder passwordEncoder ) {
 		super();
 		this.userRepository = userRepository;
 		this.customerRepository = customerRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.restaurantOwnerRepository = restaurantOwnerRepository;
 	}
 
 
@@ -62,9 +68,63 @@ public class UserAccountService {
 				.build();
 
 		customerRepository.save(customer);
+				
+		return user;
+	}
+	
+	@Transactional
+	public User createNewAccountRestaurantOwner(@Valid @RequestBody CreateRestaurantOwnerDto createRestaurantOwnerDto) {
+		User user = User.builder()
+				.email(createRestaurantOwnerDto.getEmail())
+				.password(createRestaurantOwnerDto.getPassword())
+				.userRole(UserRole.EMPLOYEE)
+				.build();
+
+		boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
+
+		if (userExists) {
+			throw new IllegalStateException("Email is already in use");
+		}
 		
-		// TODO Send JWT Token
+		String encodedPass = passwordEncoder.encode(user.getPassword());
 		
+		user.setPassword(encodedPass);
+		
+		userRepository.save(user);
+		
+		RestaurantOwner restaurantOwner = RestaurantOwner.builder()
+				.firstName(createRestaurantOwnerDto.getFirstName())
+				.lastName(createRestaurantOwnerDto.getLastName())
+				.email(createRestaurantOwnerDto.getEmail())
+				.phone(createRestaurantOwnerDto.getPhone())
+				.user(user)
+				.build();
+
+		restaurantOwnerRepository.save(restaurantOwner);
+				
+		return user;
+	}
+
+	@Transactional
+	public User createNewAccountAdmin(@Valid CreateAdminDto createAdminDto) {
+		User user = User.builder()
+				.email(createAdminDto.getEmail())
+				.password(createAdminDto.getPassword())
+				.userRole(UserRole.ADMIN)
+				.build();
+
+		boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
+
+		if (userExists) {
+			throw new IllegalStateException("Email is already in use");
+		}
+		
+		String encodedPass = passwordEncoder.encode(user.getPassword());
+		
+		user.setPassword(encodedPass);
+		
+		userRepository.save(user);
+						
 		return user;
 	}
 
@@ -86,4 +146,6 @@ public class UserAccountService {
 		return userRepository.save(user);
 	}
 
+
+	
 }

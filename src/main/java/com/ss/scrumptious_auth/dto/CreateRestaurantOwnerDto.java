@@ -13,8 +13,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class CreateCustomerDto {
-
+public class CreateRestaurantOwnerDto {
 	private final String firstName;
 	private final String lastName;
 	
