@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ss.scrumptious_auth.dto.AuthResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,6 +28,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
     private final SecurityConstants securityConstants;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager, SecurityConstants securityConstants) {
         super(authenticationManager);
@@ -39,7 +41,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         LoginViewModel credentials = null;
         try {
-            credentials = new ObjectMapper().readValue(request.getInputStream(), LoginViewModel.class);
+            credentials = objectMapper.readValue(request.getInputStream(), LoginViewModel.class);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     credentials.getUsername(), credentials.getPassword(), new ArrayList<>());
             Authentication auth = authenticationManager.authenticate(authenticationToken);
@@ -59,7 +61,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = JWT.create().withSubject(user.getUsername()).withExpiresAt(securityConstants.getExpirationDate())
                 .sign(Algorithm.HMAC512(securityConstants.getSECRET().getBytes()));
 
-        response.addHeader(securityConstants.getHEADER_STRING(), securityConstants.getTOKEN_PREFIX() + token);
+        String headerVal = securityConstants.getTOKEN_PREFIX() + token;
+        response.addHeader(securityConstants.getHEADER_STRING(), headerVal);
+        String respBody = objectMapper.writeValueAsString(new AuthResponse(user.getUserId(), headerVal, securityConstants.getExpirationDate()));
+        response.getWriter().write(respBody);
     }
 
     @Override
