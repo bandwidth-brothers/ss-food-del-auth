@@ -7,6 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -23,6 +24,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -61,6 +63,8 @@ public class UserInformationTests {
         when(securityConstants.getTOKEN_PREFIX()).thenReturn("Bearer ");
         when(securityConstants.getHEADER_STRING()).thenReturn("Authorization");
         when(securityConstants.getExpirationDate()).thenReturn(mockJwtExpireDate);
+        when(securityConstants.getAUTHORITY_CLAIM_KEY()).thenReturn("Authorities");
+        when(securityConstants.getUSER_ID_CLAIM_KEY()).thenReturn("UserId");
     }
 
     @After
@@ -82,9 +86,16 @@ public class UserInformationTests {
 
         String uuid = user.getUserId().toString();
 
+        String authorites = user.getAuthorities()
+        		.stream()
+        		.map(GrantedAuthority::getAuthority)
+        		.collect(Collectors.joining(","));
+        
         String token = JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(securityConstants.getExpirationDate())
+                .withClaim(securityConstants.getUSER_ID_CLAIM_KEY(), uuid)
+        		.withClaim(securityConstants.getAUTHORITY_CLAIM_KEY(), authorites)
                 .sign(Algorithm.HMAC512(securityConstants.getSECRET().getBytes()));
 
 		mvc.perform(get("/accounts/" + uuid).header(securityConstants.getHEADER_STRING(), securityConstants.getTOKEN_PREFIX() + token))
@@ -119,10 +130,17 @@ public class UserInformationTests {
         userRepository.save(adminUser);
         userRepository.save(user1);
         userRepository.save(user2);
-
+       
+        String authorites = adminUser.getAuthorities()
+        		.stream()
+        		.map(GrantedAuthority::getAuthority)
+        		.collect(Collectors.joining(","));
+        
         String token = JWT.create()
                 .withSubject(adminUser.getUsername())
                 .withExpiresAt(securityConstants.getExpirationDate())
+                .withClaim(securityConstants.getUSER_ID_CLAIM_KEY(), adminUser.getUserId().toString())
+        		.withClaim(securityConstants.getAUTHORITY_CLAIM_KEY(), authorites)
                 .sign(Algorithm.HMAC512(securityConstants.getSECRET().getBytes()));
 
 		mvc.perform(get("/accounts").header(securityConstants.getHEADER_STRING(), securityConstants.getTOKEN_PREFIX() + token))

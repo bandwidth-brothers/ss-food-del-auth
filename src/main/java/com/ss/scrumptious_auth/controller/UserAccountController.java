@@ -38,7 +38,7 @@ public class UserAccountController {
 	public ResponseEntity<UUID> createNewAccountCustomer(@Valid @RequestBody CreateCustomerDto createCustomerDto) {
 		User user = userAccountService.createNewAccountCustomer(createCustomerDto);
 		UUID userId = user.getUserId();
-		return ResponseEntity.created(URI.create("/accounts/register/" + userId)).body(userId);
+		return ResponseEntity.created(URI.create("/login")).body(userId);
 	}
 
 	@GetMapping

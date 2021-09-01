@@ -28,7 +28,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private PasswordEncoder passwordEncoder;
     
     private final UserDetailServiceImp userDetailServiceImp;
-    private final UserRepository userRepository;
     private final SecurityConstants securityConstants;
 
 
@@ -48,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().headers().frameOptions().sameOrigin().and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), securityConstants))
-                .addFilter(new JwtAuthenticationVerificationFilter(authenticationManager(), userRepository, securityConstants))
+                .addFilter(new JwtAuthenticationVerificationFilter(authenticationManager(), securityConstants))
                 .authorizeRequests()
                 .antMatchers("/accounts/register/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/login").permitAll()

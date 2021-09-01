@@ -3,6 +3,10 @@ package com.ss.scrumptious_auth.security;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -12,21 +16,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.auth0.jwt.JWT;
-import com.ss.scrumptious_auth.dao.UserRepository;
-import com.ss.scrumptious_auth.entity.User;
+import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class JwtAuthenticationVerificationFilter extends BasicAuthenticationFilter {
-    private UserRepository userRepository;
     private final SecurityConstants securityConstants;
 
     public JwtAuthenticationVerificationFilter(AuthenticationManager authenticationManager,
-            UserRepository userRepository, SecurityConstants securityConstants) {
+            SecurityConstants securityConstants) {
         super(authenticationManager);
-        this.userRepository = userRepository;
         this.securityConstants = securityConstants;
     }
 
@@ -57,17 +59,33 @@ public class JwtAuthenticationVerificationFilter extends BasicAuthenticationFilt
             return null;
         }
 
+        DecodedJWT jwt = JWT.require(HMAC512(securityConstants.getSECRET().getBytes()))
+                .build()
+                .verify(token);
+        
         // parse the token and validate it
-        String userName = JWT.require(HMAC512(securityConstants.getSECRET().getBytes())).build().verify(token)
-                .getSubject();
-
-        if (userName == null) {
+        String userName = jwt.getSubject();
+ 
+        if (userName == null){
             return null;
         }
 
-        // Search in the DB if we find the user by token subject (username)
-        // If so, then grab user details and create spring auth token using username, pass, authorities/roles
-        User user = userRepository.findByEmail(userName).get();
-        return new UsernamePasswordAuthenticationToken(userName, null, user.getAuthorities());
+        
+        
+        List<SimpleGrantedAuthority> authorities = Arrays.asList(
+        		jwt.getClaim(securityConstants.getAUTHORITY_CLAIM_KEY()).asString().split(","))
+        		.stream()
+        		.map(s -> new SimpleGrantedAuthority(s))
+        		.collect(Collectors.toList());
+        
+        String userId = jwt.getClaim(securityConstants.getUSER_ID_CLAIM_KEY()).asString();
+        
+        JwtPrincipalModel jwtPrincipalModel = JwtPrincipalModel.builder()
+        		.username(userName)
+        		.userId(UUID.fromString(userId))
+        		.build();
+      
+        return new UsernamePasswordAuthenticationToken(jwtPrincipalModel, null, authorities);
+ 
     }
 }

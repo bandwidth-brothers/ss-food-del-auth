@@ -4,6 +4,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -56,14 +59,25 @@ public class JwtAuthenticationTests {
         when(securityConstants.getTOKEN_PREFIX()).thenReturn("Bearer ");
         when(securityConstants.getHEADER_STRING()).thenReturn("Authorization");
         when(securityConstants.getExpirationDate()).thenReturn(mockJwtExpireDate);
+        when(securityConstants.getAUTHORITY_CLAIM_KEY()).thenReturn("Authorities");
+        when(securityConstants.getUSER_ID_CLAIM_KEY()).thenReturn("UserId");
 
-        User user = User.builder().email("test@test.com").password(encoder.encode("123"))
+        User user = User.builder()
+        		.userId(UUID.randomUUID())
+        		.email("test@test.com").password(encoder.encode("123"))
                 .userRole(UserRole.ADMIN).build();
         // userRepository.save(user);
 
+        String authorites = user.getAuthorities()
+        		.stream()
+        		.map(GrantedAuthority::getAuthority)
+        		.collect(Collectors.joining(","));
+        
         String token = JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(mockJwtExpireDate)
+                .withClaim(securityConstants.getUSER_ID_CLAIM_KEY(), user.getUserId().toString())
+        		.withClaim(securityConstants.getAUTHORITY_CLAIM_KEY(), authorites)
                 .sign(Algorithm.HMAC512(securityConstants.getSECRET().getBytes()));
 
         Authentication mockAuthResult = Mockito.mock(Authentication.class);

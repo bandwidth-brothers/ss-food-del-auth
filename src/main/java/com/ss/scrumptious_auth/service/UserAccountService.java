@@ -16,6 +16,7 @@ import com.ss.scrumptious_auth.dao.UserRepository;
 import com.ss.scrumptious_auth.dto.CreateCustomerDto;
 import com.ss.scrumptious_auth.entity.Customer;
 import com.ss.scrumptious_auth.entity.User;
+import com.ss.scrumptious_auth.entity.UserRole;
 
 @Service
 public class UserAccountService {
@@ -37,6 +38,7 @@ public class UserAccountService {
 		User user = User.builder()
 				.email(createCustomerDto.getEmail())
 				.password(createCustomerDto.getPassword())
+				.userRole(UserRole.CUSTOMER)
 				.build();
 
 		boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
