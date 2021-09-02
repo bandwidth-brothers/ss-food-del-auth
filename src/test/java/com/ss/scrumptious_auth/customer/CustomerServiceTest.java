@@ -12,12 +12,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import com.ss.scrumptious_auth.dao.CustomerRepository;
+import com.ss.scrumptious_auth.dao.RestaurantOwnerRepository;
 import com.ss.scrumptious_auth.dao.UserRepository;
-import com.ss.scrumptious_auth.dto.CreateCustomerDto;
+import com.ss.scrumptious_auth.dto.CreateUserDto;
 import com.ss.scrumptious_auth.entity.Customer;
+import com.ss.scrumptious_auth.entity.RestaurantOwner;
 import com.ss.scrumptious_auth.entity.User;
+import com.ss.scrumptious_auth.entity.UserRole;
 import com.ss.scrumptious_auth.service.UserAccountService;
 
 @SpringBootTest
@@ -30,6 +34,9 @@ public class CustomerServiceTest {
 	@Mock
 	CustomerRepository customerRepository;
 	
+	@Mock
+	RestaurantOwnerRepository restaurantOwnerRepository;
+	
 	@Autowired
 	BCryptPasswordEncoder encoder;
 	
@@ -39,17 +46,16 @@ public class CustomerServiceTest {
 	
 	@BeforeEach
 	void setUp() {
-		userAccountService = new UserAccountService(userRepository, customerRepository, encoder);
+		userAccountService = new UserAccountService(userRepository, customerRepository, restaurantOwnerRepository, encoder);
 	}
 
 
 
 	@Test
 	void createNewUserCustomerTest() {
-		CreateCustomerDto customerDto = CreateCustomerDto.builder()
+		CreateUserDto customerDto = CreateUserDto.builder()
 				.firstName("Bruno")
 				.lastName("Rebaza")
-				.username("customer")
 				.email("customer@gmail.com")
 				.phone("111-222-3333")
 				.password("pass")
@@ -58,6 +64,7 @@ public class CustomerServiceTest {
 		User user = User.builder()
 				.email(customerDto.getEmail())
 				.password(customerDto.getPassword())
+				.userRole(UserRole.CUSTOMER)
 				.build();
 		
 		Customer customer = Customer.builder()
@@ -69,7 +76,7 @@ public class CustomerServiceTest {
 				.build();
 		
 		
-		userAccountService.createNewAccountCustomer(customerDto);
+		userAccountService.createNewAccount(customerDto, UserRole.CUSTOMER);
 		
 		ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
 		ArgumentCaptor<Customer> customerArgumentCaptor = ArgumentCaptor.forClass(Customer.class);
@@ -85,4 +92,70 @@ public class CustomerServiceTest {
 
 	}
 	
+	@Test
+	void createNewUserRestaurantOwnerTest() {
+		CreateUserDto restaurantOwnerDto = CreateUserDto.builder()
+				.firstName("Bruno")
+				.lastName("Rebaza")
+				.email("restaurantOwner@gmail.com")
+				.phone("111-222-3333")
+				.password("pass")
+				.build();
+		
+		User user = User.builder()
+				.email(restaurantOwnerDto.getEmail())
+				.password(restaurantOwnerDto.getPassword())
+				.userRole(UserRole.EMPLOYEE)
+				.build();
+		
+		RestaurantOwner restaurantOwner = RestaurantOwner.builder()
+				.firstName(restaurantOwnerDto.getFirstName())
+				.lastName(restaurantOwnerDto.getLastName())
+				.email(restaurantOwnerDto.getEmail())
+				.phone(restaurantOwnerDto.getPhone())
+				.user(user)
+				.build();
+		
+		
+		userAccountService.createNewAccount(restaurantOwnerDto, UserRole.EMPLOYEE);
+		
+		ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
+		ArgumentCaptor<RestaurantOwner> restaurantOwnerArgumentCaptor = ArgumentCaptor.forClass(RestaurantOwner.class);
+
+		verify(userRepository).save(userArgumentCaptor.capture());
+		verify(restaurantOwnerRepository).save(restaurantOwnerArgumentCaptor.capture());
+
+		User capturedUser = userArgumentCaptor.getValue();
+		RestaurantOwner capturedRestaurantOwner= restaurantOwnerArgumentCaptor.getValue();
+		
+		assertEquals(user, capturedUser);
+		assertEquals(restaurantOwner, capturedRestaurantOwner);
+
+	}
+	
+	@Test
+	@WithMockUser(roles = {"ADMIN"})
+	void createNewUserAdminTest() {
+		CreateUserDto adminDto = CreateUserDto.builder()
+				.email("admin@gmail.com")
+				.password("pass")
+				.build();
+		
+		User user = User.builder()
+				.email(adminDto.getEmail())
+				.password(adminDto.getPassword())
+				.userRole(UserRole.ADMIN)
+				.build();
+		
+		
+		userAccountService.createNewAccount(adminDto, UserRole.ADMIN);
+		
+		ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
+
+		verify(userRepository).save(userArgumentCaptor.capture());
+
+		User capturedUser = userArgumentCaptor.getValue();
+		
+		assertEquals(user, capturedUser);
+	}
 }

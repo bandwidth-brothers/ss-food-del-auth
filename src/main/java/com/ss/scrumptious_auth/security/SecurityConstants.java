@@ -17,6 +17,8 @@ public class SecurityConstants {
     private String EXPIRATION_DURATION; // 10 days
     private String TOKEN_PREFIX;
     private String HEADER_STRING;
+    private String AUTHORITY_CLAIM_KEY;
+    private String USER_ID_CLAIM_KEY;
 
     public Date getExpirationDate() {
         return new Date(System.currentTimeMillis() + Long.valueOf(this.EXPIRATION_DURATION.replaceAll("_", "")));

@@ -5,12 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.UUID;
 
-import com.ss.scrumptious_auth.dao.CustomerRepository;
-import com.ss.scrumptious_auth.dao.UserRepository;
-import com.ss.scrumptious_auth.entity.User;
-import com.ss.scrumptious_auth.entity.UserRole;
-import com.ss.scrumptious_auth.service.UserAccountService;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import com.ss.scrumptious_auth.dao.CustomerRepository;
+import com.ss.scrumptious_auth.dao.RestaurantOwnerRepository;
+import com.ss.scrumptious_auth.dao.UserRepository;
+import com.ss.scrumptious_auth.entity.User;
+import com.ss.scrumptious_auth.entity.UserRole;
+import com.ss.scrumptious_auth.service.UserAccountService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RunWith(SpringRunner.class)
@@ -29,6 +30,9 @@ public class UpdateUserServiceTest {
 	@Autowired
 	CustomerRepository customerRepository;
 	
+	@Autowired
+	RestaurantOwnerRepository restaurantOwnerRepository;
+	
     @Autowired
     BCryptPasswordEncoder encoder;
 	
@@ -36,7 +40,7 @@ public class UpdateUserServiceTest {
 	
 	@Before
 	public void setUp() {
-		userAccountService = new UserAccountService(userRepository, customerRepository, encoder);
+		userAccountService = new UserAccountService(userRepository, customerRepository, restaurantOwnerRepository, encoder);
 	}
 
 	@Test

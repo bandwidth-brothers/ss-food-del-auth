@@ -13,14 +13,13 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @Builder
-public class CreateCustomerDto {
-
+public class CreateUserDto {
 	private final String firstName;
 	private final String lastName;
-	private final String username;
 	
 	@Email(message="Email is not valid")
 	private final String email;
 	private final String password;
 	private final String phone;
+
 }
