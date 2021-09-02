@@ -17,9 +17,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import com.ss.scrumptious_auth.dao.CustomerRepository;
 import com.ss.scrumptious_auth.dao.RestaurantOwnerRepository;
 import com.ss.scrumptious_auth.dao.UserRepository;
-import com.ss.scrumptious_auth.dto.CreateAdminDto;
-import com.ss.scrumptious_auth.dto.CreateCustomerDto;
-import com.ss.scrumptious_auth.dto.CreateRestaurantOwnerDto;
+import com.ss.scrumptious_auth.dto.CreateUserDto;
 import com.ss.scrumptious_auth.entity.Customer;
 import com.ss.scrumptious_auth.entity.RestaurantOwner;
 import com.ss.scrumptious_auth.entity.User;
@@ -55,7 +53,7 @@ public class CustomerServiceTest {
 
 	@Test
 	void createNewUserCustomerTest() {
-		CreateCustomerDto customerDto = CreateCustomerDto.builder()
+		CreateUserDto customerDto = CreateUserDto.builder()
 				.firstName("Bruno")
 				.lastName("Rebaza")
 				.email("customer@gmail.com")
@@ -78,7 +76,7 @@ public class CustomerServiceTest {
 				.build();
 		
 		
-		userAccountService.createNewAccountCustomer(customerDto);
+		userAccountService.createNewAccount(customerDto, UserRole.CUSTOMER);
 		
 		ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
 		ArgumentCaptor<Customer> customerArgumentCaptor = ArgumentCaptor.forClass(Customer.class);
@@ -96,7 +94,7 @@ public class CustomerServiceTest {
 	
 	@Test
 	void createNewUserRestaurantOwnerTest() {
-		CreateRestaurantOwnerDto restaurantOwnerDto = CreateRestaurantOwnerDto.builder()
+		CreateUserDto restaurantOwnerDto = CreateUserDto.builder()
 				.firstName("Bruno")
 				.lastName("Rebaza")
 				.email("restaurantOwner@gmail.com")
@@ -119,7 +117,7 @@ public class CustomerServiceTest {
 				.build();
 		
 		
-		userAccountService.createNewAccountRestaurantOwner(restaurantOwnerDto);
+		userAccountService.createNewAccount(restaurantOwnerDto, UserRole.EMPLOYEE);
 		
 		ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
 		ArgumentCaptor<RestaurantOwner> restaurantOwnerArgumentCaptor = ArgumentCaptor.forClass(RestaurantOwner.class);
@@ -138,7 +136,7 @@ public class CustomerServiceTest {
 	@Test
 	@WithMockUser(roles = {"ADMIN"})
 	void createNewUserAdminTest() {
-		CreateAdminDto adminDto = CreateAdminDto.builder()
+		CreateUserDto adminDto = CreateUserDto.builder()
 				.email("admin@gmail.com")
 				.password("pass")
 				.build();
@@ -150,7 +148,7 @@ public class CustomerServiceTest {
 				.build();
 		
 		
-		userAccountService.createNewAccountAdmin(adminDto);
+		userAccountService.createNewAccount(adminDto, UserRole.ADMIN);
 		
 		ArgumentCaptor<User> userArgumentCaptor = ArgumentCaptor.forClass(User.class);
 

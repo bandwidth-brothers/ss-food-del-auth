@@ -17,11 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ss.scrumptious_auth.dto.CreateAdminDto;
-import com.ss.scrumptious_auth.dto.CreateCustomerDto;
-import com.ss.scrumptious_auth.dto.CreateRestaurantOwnerDto;
+import com.ss.scrumptious_auth.dto.CreateUserDto;
 import com.ss.scrumptious_auth.dto.EditUserDto;
 import com.ss.scrumptious_auth.entity.User;
+import com.ss.scrumptious_auth.entity.UserRole;
 import com.ss.scrumptious_auth.security.permissions.GetUserByIdPermission;
 import com.ss.scrumptious_auth.service.UserAccountService;
 
@@ -37,27 +36,28 @@ public class UserAccountController {
 	private final UserAccountService userAccountService;
 	
 	@PostMapping("/register")
-	public ResponseEntity<UUID> createNewAccountCustomer(@Valid @RequestBody CreateCustomerDto createCustomerDto) {
-		User user = userAccountService.createNewAccountCustomer(createCustomerDto);
-		UUID userId = user.getUserId();
-		return ResponseEntity.created(URI.create("/login")).body(userId);
+	public ResponseEntity<UUID> createNewAccountCustomer(@Valid @RequestBody CreateUserDto createUserDto) {
+		return createNewAccount(createUserDto, UserRole.CUSTOMER);
 	}
 	
 	@PostMapping("/restaurants/register")
-	public ResponseEntity<UUID> createNewAccountCustomer(@Valid @RequestBody CreateRestaurantOwnerDto createRestaurantOwnerDto) {
-		User user = userAccountService.createNewAccountRestaurantOwner(createRestaurantOwnerDto);
-		UUID userId = user.getUserId();
-		return ResponseEntity.created(URI.create("/login")).body(userId);
+	public ResponseEntity<UUID> createNewAccountRestaurantOwner(@Valid @RequestBody CreateUserDto createUserDto) {
+		return createNewAccount(createUserDto, UserRole.EMPLOYEE);
 	}
 
 	@PostMapping("/admin/register")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<UUID> createNewAccountAdmin(@Valid @RequestBody CreateAdminDto createAdminDto) {
-		User user = userAccountService.createNewAccountAdmin(createAdminDto);
+	public ResponseEntity<UUID> createNewAccountAdmin(@Valid @RequestBody CreateUserDto createUserDto) {
+		return createNewAccount(createUserDto, UserRole.ADMIN);
+		
+	}
+	
+	private ResponseEntity<UUID> createNewAccount(@Valid CreateUserDto createUserDto, UserRole role) {
+		User user = userAccountService.createNewAccount(createUserDto, role);
 		UUID userId = user.getUserId();
 		return ResponseEntity.created(URI.create("/login")).body(userId);
 	}
-	
+
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {

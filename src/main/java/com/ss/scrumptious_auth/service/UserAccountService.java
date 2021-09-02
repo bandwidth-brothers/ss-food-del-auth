@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.ss.scrumptious_auth.dao.CustomerRepository;
 import com.ss.scrumptious_auth.dao.RestaurantOwnerRepository;
 import com.ss.scrumptious_auth.dao.UserRepository;
-import com.ss.scrumptious_auth.dto.CreateAdminDto;
-import com.ss.scrumptious_auth.dto.CreateCustomerDto;
-import com.ss.scrumptious_auth.dto.CreateRestaurantOwnerDto;
+import com.ss.scrumptious_auth.dto.CreateUserDto;
 import com.ss.scrumptious_auth.entity.Customer;
 import com.ss.scrumptious_auth.entity.RestaurantOwner;
 import com.ss.scrumptious_auth.entity.User;
@@ -40,93 +38,59 @@ public class UserAccountService {
 
 
 	@Transactional
-	public User createNewAccountCustomer(@Valid @RequestBody CreateCustomerDto createCustomerDto) {
+	public User createNewAccount(@Valid @RequestBody CreateUserDto createUserDto, UserRole role) {
+		
 		User user = User.builder()
-				.email(createCustomerDto.getEmail())
-				.password(createCustomerDto.getPassword())
-				.userRole(UserRole.CUSTOMER)
+				.email(createUserDto.getEmail())
+				.password(createUserDto.getPassword())
+				.userRole(role)
 				.build();
-
+		
 		boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
+		
+		String encodedPass = passwordEncoder.encode(user.getPassword());
 
 		if (userExists) {
 			throw new IllegalStateException("Email is already in use");
 		}
 		
-		String encodedPass = passwordEncoder.encode(user.getPassword());
-		
 		user.setPassword(encodedPass);
 		
 		userRepository.save(user);
-		
-		Customer customer = Customer.builder()
-				.firstName(createCustomerDto.getFirstName())
-				.lastName(createCustomerDto.getLastName())
-				.email(createCustomerDto.getEmail())
-				.phone(createCustomerDto.getPhone())
-				.user(user)
-				.build();
 
-		customerRepository.save(customer);
+		switch(role){
+			case CUSTOMER:		
+				Customer customer = Customer.builder()
+						.firstName(createUserDto.getFirstName())
+						.lastName(createUserDto.getLastName())
+						.email(createUserDto.getEmail())
+						.phone(createUserDto.getPhone())
+						.user(user)
+						.build();
 				
-		return user;
-	}
-	
-	@Transactional
-	public User createNewAccountRestaurantOwner(@Valid @RequestBody CreateRestaurantOwnerDto createRestaurantOwnerDto) {
-		User user = User.builder()
-				.email(createRestaurantOwnerDto.getEmail())
-				.password(createRestaurantOwnerDto.getPassword())
-				.userRole(UserRole.EMPLOYEE)
-				.build();
+				customerRepository.save(customer);
 
-		boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
+				break;
+			case EMPLOYEE:
+				RestaurantOwner restaurantOwner = RestaurantOwner.builder()
+						.firstName(createUserDto.getFirstName())
+						.lastName(createUserDto.getLastName())
+						.email(createUserDto.getEmail())
+						.phone(createUserDto.getPhone())
+						.user(user)
+						.build();
 
-		if (userExists) {
-			throw new IllegalStateException("Email is already in use");
+				restaurantOwnerRepository.save(restaurantOwner);
+				break;
+			case ADMIN:
+				break;
+			default:
+				break;
 		}
-		
-		String encodedPass = passwordEncoder.encode(user.getPassword());
-		
-		user.setPassword(encodedPass);
-		
-		userRepository.save(user);
-		
-		RestaurantOwner restaurantOwner = RestaurantOwner.builder()
-				.firstName(createRestaurantOwnerDto.getFirstName())
-				.lastName(createRestaurantOwnerDto.getLastName())
-				.email(createRestaurantOwnerDto.getEmail())
-				.phone(createRestaurantOwnerDto.getPhone())
-				.user(user)
-				.build();
-
-		restaurantOwnerRepository.save(restaurantOwner);
 				
 		return user;
 	}
 
-	@Transactional
-	public User createNewAccountAdmin(@Valid CreateAdminDto createAdminDto) {
-		User user = User.builder()
-				.email(createAdminDto.getEmail())
-				.password(createAdminDto.getPassword())
-				.userRole(UserRole.ADMIN)
-				.build();
-
-		boolean userExists = userRepository.findByEmail(user.getEmail()).isPresent();
-
-		if (userExists) {
-			throw new IllegalStateException("Email is already in use");
-		}
-		
-		String encodedPass = passwordEncoder.encode(user.getPassword());
-		
-		user.setPassword(encodedPass);
-		
-		userRepository.save(user);
-						
-		return user;
-	}
 
 	public List<User> getAllUsers() {
 		return userRepository.findAll();
