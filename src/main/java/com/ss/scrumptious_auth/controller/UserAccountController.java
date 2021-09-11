@@ -40,13 +40,12 @@ public class UserAccountController {
 		return createNewAccount(createUserDto, UserRole.CUSTOMER);
 	}
 	
-	@PostMapping("/restaurants/register")
+	@PostMapping("/register/owner")
 	public ResponseEntity<UUID> createNewAccountRestaurantOwner(@Valid @RequestBody CreateUserDto createUserDto) {
 		return createNewAccount(createUserDto, UserRole.EMPLOYEE);
 	}
 
-	@PostMapping("/admin/register")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PostMapping("/register/admin")
 	public ResponseEntity<UUID> createNewAccountAdmin(@Valid @RequestBody CreateUserDto createUserDto) {
 		return createNewAccount(createUserDto, UserRole.ADMIN);
 		
