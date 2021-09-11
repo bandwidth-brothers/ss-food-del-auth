@@ -3,6 +3,8 @@ package com.ss.scrumptious_auth.security;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -72,7 +74,7 @@ public class JwtAuthenticationTests {
         		.stream()
         		.map(GrantedAuthority::getAuthority)
         		.collect(Collectors.joining(","));
-        
+
         String token = JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(mockJwtExpireDate)
@@ -84,13 +86,22 @@ public class JwtAuthenticationTests {
         when(mockAuthResult.getPrincipal()).thenReturn(user);
         JwtAuthenticationFilter authenticationFilter = new JwtAuthenticationFilter(authenticationManager, securityConstants);
 
-        authenticationFilter.successfulAuthentication(httpServletRequest, 
+        class SpyWriter extends PrintWriter {
+
+            public SpyWriter(OutputStream out) {
+                super(out);
+            }
+        }
+
+        // spy on the response body
+        SpyWriter spyWriter = new SpyWriter(System.out);
+        when(httpServletResponse.getWriter()).thenReturn(spyWriter);
+
+        authenticationFilter.successfulAuthentication(httpServletRequest,
                 httpServletResponse,
-                Mockito.mock(FilterChain.class), 
+                Mockito.mock(FilterChain.class),
                 mockAuthResult);
 
         Mockito.verify(httpServletResponse).addHeader("Authorization", "Bearer " + token);
-
     }
-
 }
