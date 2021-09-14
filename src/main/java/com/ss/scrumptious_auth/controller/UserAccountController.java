@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/accounts")
+@CrossOrigin
 @RequiredArgsConstructor
 public class UserAccountController {
 

@@ -4,7 +4,7 @@ public enum  UserRole {
 
     DEFAULT("ROLE_DEFAULT"),
     CUSTOMER("ROLE_CUSTOMER"),
-    EMPLOYEE("ROLE_EMPLOYEE"),
+    EMPLOYEE("ROLE_OWNER"),
     DRIVER("ROLE_DRIVER"),
     ADMIN("ROLE_ADMIN");
     

@@ -18,6 +18,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+// TODO: get rid of everything
 
 @Entity
 @Data
@@ -30,34 +31,27 @@ public class Customer {
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(columnDefinition = "BINARY(16)", name = "customerId", updatable = false)
+	@Column(columnDefinition = "BINARY(16)", name = "customerid", updatable = false)
 	private UUID customerId;
 	
-	@OneToOne
-	@JoinColumn(name = "userId", referencedColumnName = "userId")
-	private User user;
-	
 	@NotBlank
-	@Column(name = "firstName", nullable = false)
+	@Column(name = "firstname", nullable = false)
 	private String firstName;
 	
 	@NotBlank
-	@Column(name = "lastName", nullable = false)
+	@Column(name = "lastname", nullable = false)
 	private String lastName;
 	
 	@NotBlank
 	@Column(name = "phone", nullable = false)
 	private String phone;
 	
-	@NotBlank
-	@Column(name = "email", nullable = false)
-	private String email;
-	
 	//@NotBlank
 	@Column(name = "dob")//, nullable = false)
 	private Date dob;
 	
 	@Builder.Default
+	@Column(name = "loyaltypoints", nullable = false)
 	private Integer loyaltyPoints = 0;
 	
 }

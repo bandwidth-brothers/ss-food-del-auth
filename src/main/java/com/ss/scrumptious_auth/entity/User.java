@@ -18,20 +18,21 @@ import java.time.ZonedDateTime;
 import java.util.*;
 
 @Entity
-@Table(name ="USER")
+@Table(name ="user")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 public class User implements UserDetails {
 
+    // ! having @column(name = "userId") will invoke the springnamingstrategy and change the actual mysql table to user_id,
+    // ! keeping everything lowercase will fix this issue
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "BINARY(16)", name = "userId", updatable = false)
+    @Column(columnDefinition = "BINARY(16)", name = "userid", updatable = false)
     private UUID userId;
 
-	@OneToOne(mappedBy = "user")
-	private Customer customer;
 
     @NotBlank
     @Email
@@ -46,22 +47,29 @@ public class User implements UserDetails {
     @Default
     @JsonIgnore
     @Enumerated(EnumType.STRING)
+    @Column(name = "userrole")
     private UserRole userRole = UserRole.DEFAULT;
 
-    @Column(name="createdAt", updatable = false)
+    @Column(name="createdat", updatable = false)
     @CreationTimestamp
     private ZonedDateTime creationDateTime;
 
     @UpdateTimestamp
-	@Column(name="updatedAt")
+	@Column(name="updatedat")
     private ZonedDateTime lastModifiedDateTime;
 
 	@Builder.Default
+    @Column(name = "accountnonexpired")
 	private boolean accountNonExpired = true;
+
 	@Builder.Default
+    @Column(name = "accountnonlocked")
 	private boolean accountNonLocked = true;	
+
 	@Builder.Default
+    @Column(name = "credentialsnonexpired")
     private boolean credentialsNonExpired = true;
+
     @Builder.Default
     private boolean enabled = true;
     @Builder.Default

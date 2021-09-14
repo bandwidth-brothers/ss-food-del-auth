@@ -63,9 +63,8 @@ public class UserAccountService {
 				Customer customer = Customer.builder()
 						.firstName(createUserDto.getFirstName())
 						.lastName(createUserDto.getLastName())
-						.email(createUserDto.getEmail())
+						//.email(createUserDto.getEmail())
 						.phone(createUserDto.getPhone())
-						.user(user)
 						.build();
 				
 				customerRepository.save(customer);

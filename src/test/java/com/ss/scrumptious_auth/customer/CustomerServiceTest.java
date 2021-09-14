@@ -70,9 +70,8 @@ public class CustomerServiceTest {
 		Customer customer = Customer.builder()
 				.firstName(customerDto.getFirstName())
 				.lastName(customerDto.getLastName())
-				.email(customerDto.getEmail())
+				//.email(customerDto.getEmail())
 				.phone(customerDto.getPhone())
-				.user(user)
 				.build();
 		
 		
