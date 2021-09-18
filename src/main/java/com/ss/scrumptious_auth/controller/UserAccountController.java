@@ -22,7 +22,7 @@ import com.ss.scrumptious_auth.dto.EditUserDto;
 import com.ss.scrumptious_auth.entity.User;
 import com.ss.scrumptious_auth.entity.UserRole;
 import com.ss.scrumptious_auth.security.permissions.GetUserByIdPermission;
-import com.ss.scrumptious_auth.service.UserAccountService;
+import com.ss.scrumptious_auth.service.AuthAccountServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,34 +33,13 @@ import lombok.RequiredArgsConstructor;
 public class UserAccountController {
 
 	
-	private final UserAccountService userAccountService;
+	private final AuthAccountServiceImpl authAccountService;
 	
-	@PostMapping("/register")
-	public ResponseEntity<UUID> createNewAccountCustomer(@Valid @RequestBody CreateUserDto createUserDto) {
-		return createNewAccount(createUserDto, UserRole.CUSTOMER);
-	}
-	
-	@PostMapping("/register/owner")
-	public ResponseEntity<UUID> createNewAccountRestaurantOwner(@Valid @RequestBody CreateUserDto createUserDto) {
-		return createNewAccount(createUserDto, UserRole.EMPLOYEE);
-	}
-
-	@PostMapping("/register/admin")
-	public ResponseEntity<UUID> createNewAccountAdmin(@Valid @RequestBody CreateUserDto createUserDto) {
-		return createNewAccount(createUserDto, UserRole.ADMIN);
-		
-	}
-	
-	private ResponseEntity<UUID> createNewAccount(@Valid CreateUserDto createUserDto, UserRole role) {
-		User user = userAccountService.createNewAccount(createUserDto, role);
-		UUID userId = user.getUserId();
-		return ResponseEntity.created(URI.create("/login")).body(userId);
-	}
 
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userAccountService.getAllUsers();
+        List<User> users = authAccountService.getAllUsers();
 		if (users.isEmpty()) {
 			return ResponseEntity.noContent().build();
 		}
@@ -70,18 +49,18 @@ public class UserAccountController {
 	@GetUserByIdPermission
 	@GetMapping("/{userId}")
 	public ResponseEntity<User> currentUserName(@PathVariable UUID userId) {
-	   	Optional<User> user = userAccountService.findUserByUUID(userId);
+	   	Optional<User> user = authAccountService.findUserByUUID(userId);
 		return ResponseEntity.of(user);
 	}
 
 	@GetUserByIdPermission
 	@PutMapping("/{userId}")
 	public ResponseEntity<User> editUserByUUID(@Valid @RequestBody EditUserDto editUserDto, @PathVariable UUID userId) {
-		Optional<User> user = userAccountService.findUserByUUID(userId);
+		Optional<User> user = authAccountService.findUserByUUID(userId);
 		if (user.isPresent()) {
 			user.get().setEmail(editUserDto.getEmail());
 			user.get().setPassword(editUserDto.getPassword());
-			return ResponseEntity.ok(userAccountService.updateUser(user.get()));
+			return ResponseEntity.ok(authAccountService.updateUser(user.get()));
 		}
 		return ResponseEntity.notFound().build();
 	}
