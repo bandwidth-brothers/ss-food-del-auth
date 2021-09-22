@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import com.ss.scrumptious_auth.dao.CustomerRepository;
 import com.ss.scrumptious_auth.dao.UserRepository;
 import com.ss.scrumptious_auth.entity.User;
 
@@ -16,9 +15,7 @@ public class CustomerRepositoryTest {
 
 	@Autowired
 	private UserRepository userRepo;
-	
-	@Autowired
-	private CustomerRepository customerRepo;
+
 	
 	@AfterEach
 	void tearDown() {

@@ -73,8 +73,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             Authentication authResult) throws IOException, ServletException {
     	// Grab Principal from Database
         User user = (User) authResult.getPrincipal();
-
-        String authorites = user.getAuthorities()
+        
+        String authorities = user.getAuthorities()
         		.stream()
         		.map(GrantedAuthority::getAuthority)
         		.collect(Collectors.joining(","));
@@ -84,13 +84,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         		.withSubject(user.getUsername())
         		.withExpiresAt(securityConstants.getExpirationDate())
         		.withClaim(securityConstants.getUSER_ID_CLAIM_KEY(), user.getUserId().toString())
-        		.withClaim(securityConstants.getAUTHORITY_CLAIM_KEY(), authorites)
+        		.withClaim(securityConstants.getAUTHORITY_CLAIM_KEY(), authorities)
                 .sign(Algorithm.HMAC512(securityConstants.getSECRET().getBytes()));
 
 
         String headerVal = securityConstants.getTOKEN_PREFIX() + token;
         response.addHeader(securityConstants.getHEADER_STRING(), headerVal);
-        String respBody = objectMapper.writeValueAsString(new AuthResponse(user.getUserId(), headerVal, securityConstants.getExpirationDate()));
+        String respBody = objectMapper.writeValueAsString(new AuthResponse(user.getUserId(), headerVal, securityConstants.getExpirationDate(), authorities));
         response.getWriter().write(respBody);
 
     }

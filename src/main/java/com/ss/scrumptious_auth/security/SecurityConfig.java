@@ -1,5 +1,7 @@
 package com.ss.scrumptious_auth.security;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,16 +15,11 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-
-import com.ss.scrumptious_auth.dao.UserRepository;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -57,13 +54,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtAuthenticationVerificationFilter(authenticationManager(), securityConstants))
                 .authorizeRequests()
                 .antMatchers("/accounts/register/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/auth/owner/register/**")
+                .permitAll()
+                .antMatchers(HttpMethod.POST, "/auth/admin/register/**")
+                .permitAll()
+                .antMatchers(HttpMethod.POST, "/auth/customer/register/**")
+                .permitAll()
+                .antMatchers(HttpMethod.POST, "/auth/driver/register/**")
+                .permitAll()
                 .antMatchers("/test/**").permitAll()
                 .antMatchers(HttpMethod.POST,"/login").permitAll()
                 .antMatchers("/h2-console/*").permitAll()
 //                .antMatchers("/api/test/*").permitAll()
 //                .antMatchers("/api/management/*").hasRole("MANAGER")
 //                .antMatchers("/api/admin/*").hasRole("ADMIN")
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and()
+                .logout(logout -> logout
+                        .permitAll()
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        }
+                    ));
     }
 
     @Bean

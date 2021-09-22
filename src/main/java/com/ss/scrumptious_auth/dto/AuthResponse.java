@@ -16,4 +16,5 @@ public class AuthResponse {
     private UUID userId;
     private String token;
     private Date expiresAt;
+    private String authorities;
 }
