@@ -7,7 +7,7 @@ pipeline{
 				sh "chmod +x ./mvnw"
 			}
 		}
-		stage('Analysis'){
+		/**stage('Analysis'){
 			environment{
 				SONARQUBE_TOKEN = credentials('sonarqube')
 			}
@@ -16,7 +16,7 @@ pipeline{
 					"  -Dsonar.host.url=http://sonarqube:9000 \\\n" +
 					"  -Dsonar.login=${SONARQUBE_TOKEN}"
 			}
-		}
+		}*/
 		stage('Build'){
 			steps{
 				sh './mvnw clean package'
