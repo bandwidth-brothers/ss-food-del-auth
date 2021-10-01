@@ -1,5 +1,0 @@
-eureka:
-  client:
-    service-url:
-      defaultZone: http://${EUREKA_SERVICE_HOST:localhost}:9090/eureka/
-    fetch-registry: true
