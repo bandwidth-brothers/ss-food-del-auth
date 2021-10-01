@@ -1,5 +1,5 @@
 eureka:
   client:
     service-url:
-      defaultZone: http://10.100.126.246:9090/eureka/
+      defaultZone: http://${EUREKA_SERVICE_HOST:localhost}:9090/eureka/
     fetch-registry: true
