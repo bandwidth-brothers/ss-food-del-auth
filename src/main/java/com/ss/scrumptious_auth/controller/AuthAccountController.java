@@ -6,6 +6,8 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,4 +48,16 @@ public class AuthAccountController {
         UUID uid = authAccountService.createNewAccount(authDto, UserRole.DRIVER);
         return ResponseEntity.ok(uid);
     }
+    
+    @PostMapping("/{adminId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<Boolean> getPasswordVerification(@PathVariable UUID adminId, @RequestBody String password){
+		Boolean verification = authAccountService.getPasswordVerification(adminId, password);
+		
+		if(verification) {
+			return ResponseEntity.ok(verification);
+		} else {
+			return ResponseEntity.status(401).body(false);
+		}
+	}
 }
