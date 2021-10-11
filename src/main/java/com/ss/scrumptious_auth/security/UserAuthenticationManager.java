@@ -24,7 +24,7 @@ public class UserAuthenticationManager {
   public boolean customerIdMatches(Authentication authentication, UUID id) {
     try {
       User principal = (User) authentication.getPrincipal();
-      return principal.getUserId().equals(id);
+      return principal.getId().equals(id);
     } catch (ClassCastException ex) {
       return false;
     }

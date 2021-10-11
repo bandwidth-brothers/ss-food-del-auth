@@ -84,7 +84,7 @@ public class UserInformationTests {
 		
         user = userRepository.save(user);
 
-        String uuid = user.getUserId().toString();
+        String uuid = user.getId().toString();
 
         String authorites = user.getAuthorities()
         		.stream()
@@ -101,7 +101,7 @@ public class UserInformationTests {
 		mvc.perform(get("/accounts/" + uuid).header(securityConstants.getHEADER_STRING(), securityConstants.getTOKEN_PREFIX() + token))
 		.andExpect(status().isOk())
         .andExpect(jsonPath("$.email").value(user.getEmail()))
-        .andExpect(jsonPath("$.userId").value(user.getUserId().toString()));
+        .andExpect(jsonPath("$.id").value(user.getId().toString()));
 
     }
 
@@ -139,18 +139,18 @@ public class UserInformationTests {
         String token = JWT.create()
                 .withSubject(adminUser.getUsername())
                 .withExpiresAt(securityConstants.getExpirationDate())
-                .withClaim(securityConstants.getUSER_ID_CLAIM_KEY(), adminUser.getUserId().toString())
+                .withClaim(securityConstants.getUSER_ID_CLAIM_KEY(), adminUser.getId().toString())
         		.withClaim(securityConstants.getAUTHORITY_CLAIM_KEY(), authorites)
                 .sign(Algorithm.HMAC512(securityConstants.getSECRET().getBytes()));
 
 		mvc.perform(get("/accounts").header(securityConstants.getHEADER_STRING(), securityConstants.getTOKEN_PREFIX() + token))
 		.andExpect(status().isOk())
         .andExpect(jsonPath("$.[0]email").value(adminUser.getEmail()))
-        .andExpect(jsonPath("$.[0]userId").value(adminUser.getUserId().toString()))
+        .andExpect(jsonPath("$.[0]id").value(adminUser.getId().toString()))
         .andExpect(jsonPath("$.[1]email").value(user1.getEmail()))
-        .andExpect(jsonPath("$.[1]userId").value(user1.getUserId().toString()))
+        .andExpect(jsonPath("$.[1]id").value(user1.getId().toString()))
         .andExpect(jsonPath("$.[2]email").value(user2.getEmail()))
-        .andExpect(jsonPath("$.[2]userId").value(user2.getUserId().toString()));  
+        .andExpect(jsonPath("$.[2]id").value(user2.getId().toString()));  
 
     }
 

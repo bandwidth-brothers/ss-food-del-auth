@@ -43,8 +43,8 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(columnDefinition = "BINARY(16)", name = "userId", updatable = false)
-    private UUID userId;
+    @Column(columnDefinition = "BINARY(16)", name = "id", updatable = false)
+    private UUID id;
 	
     @NotBlank
     @Email

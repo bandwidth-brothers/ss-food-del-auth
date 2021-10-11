@@ -83,14 +83,14 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String token = JWT.create()
         		.withSubject(user.getUsername())
         		.withExpiresAt(securityConstants.getExpirationDate())
-        		.withClaim(securityConstants.getUSER_ID_CLAIM_KEY(), user.getUserId().toString())
+        		.withClaim(securityConstants.getUSER_ID_CLAIM_KEY(), user.getId().toString())
         		.withClaim(securityConstants.getAUTHORITY_CLAIM_KEY(), authorities)
                 .sign(Algorithm.HMAC512(securityConstants.getSECRET().getBytes()));
 
 
         String headerVal = securityConstants.getTOKEN_PREFIX() + token;
         response.addHeader(securityConstants.getHEADER_STRING(), headerVal);
-        String respBody = objectMapper.writeValueAsString(new AuthResponse(user.getUserId(), headerVal, securityConstants.getExpirationDate(), authorities));
+        String respBody = objectMapper.writeValueAsString(new AuthResponse(user.getId(), headerVal, securityConstants.getExpirationDate(), authorities));
         response.getWriter().write(respBody);
 
     }

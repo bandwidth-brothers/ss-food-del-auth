@@ -49,19 +49,17 @@ public class UserAccountController {
 	@GetUserByIdPermission
 	@GetMapping("/{userId}")
 	public ResponseEntity<User> currentUserName(@PathVariable UUID userId) {
-	   	Optional<User> user = authAccountService.findUserByUUID(userId);
-		return ResponseEntity.of(user);
+	   	User user = authAccountService.findUserById(userId);
+		return ResponseEntity.ok(user);
 	}
 
 	@GetUserByIdPermission
 	@PutMapping("/{userId}")
 	public ResponseEntity<User> editUserByUUID(@Valid @RequestBody EditUserDto editUserDto, @PathVariable UUID userId) {
-		Optional<User> user = authAccountService.findUserByUUID(userId);
-		if (user.isPresent()) {
-			user.get().setEmail(editUserDto.getEmail());
-			user.get().setPassword(editUserDto.getPassword());
-			return ResponseEntity.ok(authAccountService.updateUser(user.get()));
-		}
-		return ResponseEntity.notFound().build();
+		User user = authAccountService.findUserById(userId);
+		
+			user.setEmail(editUserDto.getEmail());
+			user.setPassword(editUserDto.getPassword());
+		return ResponseEntity.ok(authAccountService.updateUser(user));
 	}
 }

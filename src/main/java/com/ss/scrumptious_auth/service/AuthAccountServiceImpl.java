@@ -40,7 +40,7 @@ public class AuthAccountServiceImpl implements AuthAccountService {
                 .build();
 
         User u = userRepository.save(user);
-        return u.getUserId();
+        return u.getId();
     }
 
     
@@ -52,13 +52,19 @@ public class AuthAccountServiceImpl implements AuthAccountService {
 		return userRepository.findByEmail(email);
 	}
 
-	public Optional<User> findUserByUUID(UUID uuid) {
-		return userRepository.findById(uuid);
+	public User findUserById(UUID uuid) {
+		return userRepository.findById(uuid).orElseThrow(null);
 	}
 
 	public User updateUser(User user) {
 		String encodedPass = passwordEncoder.encode(user.getPassword());
 		user.setPassword(encodedPass);
 		return userRepository.save(user);
+	}
+
+
+	public Boolean getPasswordVerification(UUID adminId, String password) {
+		User adminUser = findUserById(adminId);
+		return passwordEncoder.matches(password, adminUser.getPassword());
 	}
 }

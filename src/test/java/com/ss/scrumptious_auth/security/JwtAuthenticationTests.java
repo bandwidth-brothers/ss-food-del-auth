@@ -65,7 +65,7 @@ public class JwtAuthenticationTests {
         when(securityConstants.getUSER_ID_CLAIM_KEY()).thenReturn("UserId");
 
         User user = User.builder()
-        		.userId(UUID.randomUUID())
+        		.id(UUID.randomUUID())
         		.email("test@test.com").password(encoder.encode("123"))
                 .userRole(UserRole.ADMIN).build();
         // userRepository.save(user);
@@ -78,7 +78,7 @@ public class JwtAuthenticationTests {
         String token = JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(mockJwtExpireDate)
-                .withClaim(securityConstants.getUSER_ID_CLAIM_KEY(), user.getUserId().toString())
+                .withClaim(securityConstants.getUSER_ID_CLAIM_KEY(), user.getId().toString())
         		.withClaim(securityConstants.getAUTHORITY_CLAIM_KEY(), authorites)
                 .sign(Algorithm.HMAC512(securityConstants.getSECRET().getBytes()));
 
