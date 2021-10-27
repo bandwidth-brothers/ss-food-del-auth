@@ -46,4 +46,9 @@ public class AuthAccountController {
         UUID uid = authAccountService.createNewAccount(authDto, UserRole.DRIVER);
         return ResponseEntity.ok(uid);
     }
+    
+    @PostMapping("/healthcheck")
+    public ResponseEntity healthCheck(){
+        return ResponseEntity.ok().build();
+    }
 }
