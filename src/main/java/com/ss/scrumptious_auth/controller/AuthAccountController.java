@@ -48,7 +48,7 @@ public class AuthAccountController {
         return ResponseEntity.ok(uid);
     }
     @GetMapping("/health")
-    public string getHealth(){
+    public String getHealth(){
         return "Okay";
     }
 }
