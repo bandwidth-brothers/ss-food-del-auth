@@ -46,4 +46,8 @@ public class AuthAccountController {
         UUID uid = authAccountService.createNewAccount(authDto, UserRole.DRIVER);
         return ResponseEntity.ok(uid);
     }
+    @GetMapping(path="/health", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public string getHealth(){
+        return "Okay";
+    }
 }
