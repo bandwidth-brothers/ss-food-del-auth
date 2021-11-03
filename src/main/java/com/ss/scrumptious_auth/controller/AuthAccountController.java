@@ -47,8 +47,4 @@ public class AuthAccountController {
         UUID uid = authAccountService.createNewAccount(authDto, UserRole.DRIVER);
         return ResponseEntity.ok(uid);
     }
-    @GetMapping("/health")
-    public String getHealth(){
-        return "Okay";
-    }
 }
