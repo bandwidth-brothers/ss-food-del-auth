@@ -49,4 +49,5 @@ buildNumber.properties
 
 .idea/
 
-
+application-*.properties
+aws-config.properties
