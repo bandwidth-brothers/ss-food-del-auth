@@ -1,9 +1,8 @@
 pipeline{
 	agent any
-	parameters{
-		string(name: 'AWS_ID', defaultValue: '0', description: 'AWS user ID')
-		string(name: 'AWS_REGION', defaultValue: '', description: 'Desired AWS Region')
-		string(name: 'SERVICE_NAME', defaultValue: '', description: 'Name of Microservice')
+	environment{
+		AWS_ID = credentials('aws-id')
+		AWS_REGION = credentials('aws-region')
 	}
 	stages{
 		stage('Checkout'){
