@@ -36,8 +36,7 @@ pipeline{
 		}
 		stage('Deploy'){
 			steps{
-				sh "commit=$(git rev-parse --short HEAD)"
-				sh "docker build -t ss-${SERVICE_NAME}:$commit ."
+				sh "docker build -t ss-${SERVICE_NAME}:${git rev-parse --short HEAD} ."
 				script{
 					docker.withRegistry("https://${AWS_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/","ecr:${AWS_REGION}:aws-creds"){
 						docker.image("ss-scrumptious-repo:restaurant-auth").push()
