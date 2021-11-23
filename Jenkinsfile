@@ -1,5 +1,10 @@
 pipeline{
 	agent any
+	parameters{
+		string(name: 'AWS_ID', defaultValue: '0', description: 'AWS user ID')
+		string(name: 'AWS_REGION', defaultValue: '', description: 'Desired AWS Region')
+		string(name: 'SERVICE_NAME', defaultValue: '', description: 'Name of Microservice')
+	}
 	stages{
 		stage('Checkout'){
 			steps{
@@ -32,9 +37,10 @@ pipeline{
 		}
 		stage('Deploy'){
 			steps{
-				sh "docker build -t ss-scrumptious-repo:restaurant-auth ."
+				sh "commit=$(git rev-parse --short HEAD)"
+				sh "docker build -t ss-${SERVICE_NAME}:$commit ."
 				script{
-					docker.withRegistry("https://419106922284.dkr.ecr.us-east-2.amazonaws.com/","ecr:us-east-2:aws-creds"){
+					docker.withRegistry("https://${AWS_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/","ecr:${AWS_REGION}:aws-creds"){
 						docker.image("ss-scrumptious-repo:restaurant-auth").push()
 					}
 				}
