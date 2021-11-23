@@ -36,11 +36,13 @@ pipeline{
 		}
 		stage('Deploy'){
 			steps{
+				sh 'git rev-parse HEAD'
+				sh 'git rev-parse --short HEAD'
 				sh 'git rev-parse --short HEAD > GIT_COMMIT'
 				sh "docker build -t ss-auth:${GIT_COMMIT} ."
 				script{
 					docker.withRegistry("https://${AWS_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/","ecr:${AWS_REGION}:aws-creds"){
-						docker.image("ss-scrumptious-repo:restaurant-auth").push()
+						docker.image("ss-auth:${GIT_COMMIT}").push()
 					}
 				}
 				sh "docker system prune -fa"
