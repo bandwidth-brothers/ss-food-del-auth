@@ -39,7 +39,7 @@ pipeline{
 				sh "docker build -t ss-auth:${GIT_COMMIT[0..7]} -t ss-auth:latest ."
 				script{
 					docker.withRegistry("https://${AWS_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/","ecr:${AWS_REGION}:aws-creds"){
-						docker.image("ss-auth:${GIT_COMMIT}").push()
+						docker.image("ss-auth:${GIT_COMMIT[0..7]}").push()
 						docker.image("ss-auth:latest").push()
 					}
 				}
