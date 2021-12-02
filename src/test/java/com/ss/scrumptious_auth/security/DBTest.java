@@ -1,10 +1,9 @@
 package com.ss.scrumptious_auth.security;
 
+import com.ss.scrumptious.common_entities.entity.User;
+import com.ss.scrumptious.common_entities.entity.UserRole;
 import com.ss.scrumptious_auth.dao.UserRepository;
-import com.ss.scrumptious_auth.entity.User;
-import com.ss.scrumptious_auth.entity.UserRole;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

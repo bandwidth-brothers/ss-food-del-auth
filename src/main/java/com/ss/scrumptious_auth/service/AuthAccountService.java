@@ -2,8 +2,9 @@ package com.ss.scrumptious_auth.service;
 
 import java.util.UUID;
 
+import com.ss.scrumptious.common_entities.entity.UserRole;
 import com.ss.scrumptious_auth.dto.AuthDto;
-import com.ss.scrumptious_auth.entity.UserRole;
+
 
 public interface AuthAccountService {
 

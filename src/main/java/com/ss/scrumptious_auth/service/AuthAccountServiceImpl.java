@@ -6,13 +6,14 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import com.ss.scrumptious.common_entities.entity.User;
+import com.ss.scrumptious.common_entities.entity.UserRole;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ss.scrumptious_auth.dao.UserRepository;
 import com.ss.scrumptious_auth.dto.AuthDto;
-import com.ss.scrumptious_auth.entity.User;
-import com.ss.scrumptious_auth.entity.UserRole;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -43,7 +44,7 @@ public class AuthAccountServiceImpl implements AuthAccountService {
         return u.getId();
     }
 
-    
+
     public List<User> getAllUsers() {
 		return userRepository.findAll();
 	}

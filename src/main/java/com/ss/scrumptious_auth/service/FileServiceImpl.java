@@ -16,7 +16,7 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 
 @Service
-@PropertySource("classpath:aws-config.properties")
+@PropertySource("classpath:application.properties")
 public class FileServiceImpl {
     private static final Logger LOG = LoggerFactory.getLogger(FileServiceImpl.class);
 
@@ -25,18 +25,18 @@ public class FileServiceImpl {
 
     // Your bucket name.
     @Value("${amazon.s3.bucket.name}")
-    private String bucketName; 
+    private String bucketName;
 
-    
+
 
     // Getters for parents.
     protected AmazonS3 getClient() {
         return awsS3;
     }
 
-    
+
     @Async
-    private String generateUrl(String fileName, HttpMethod httpMethod) {    	
+    private String generateUrl(String fileName, HttpMethod httpMethod) {
     	Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.DATE, 1); // Generated URL will be valid for 24 hours

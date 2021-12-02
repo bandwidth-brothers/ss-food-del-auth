@@ -63,6 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/auth/driver/register/**")
                 .permitAll()
                 .antMatchers("/test/**").permitAll()
+                .antMatchers( HttpMethod.GET,"/auth/health").permitAll()
                 .antMatchers(HttpMethod.POST,"/login").permitAll()
                 .antMatchers("/h2-console/*").permitAll()
 //                .antMatchers("/api/test/*").permitAll()

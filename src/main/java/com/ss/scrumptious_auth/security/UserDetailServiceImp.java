@@ -1,12 +1,13 @@
 package com.ss.scrumptious_auth.security;
 
+import com.ss.scrumptious.common_entities.entity.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ss.scrumptious_auth.dao.UserRepository;
-import com.ss.scrumptious_auth.entity.User;
+
 
 import lombok.RequiredArgsConstructor;
 

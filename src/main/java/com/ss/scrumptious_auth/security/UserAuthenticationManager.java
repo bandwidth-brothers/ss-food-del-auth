@@ -1,11 +1,10 @@
 package com.ss.scrumptious_auth.security;
 
-import java.util.UUID;
-
-import com.ss.scrumptious_auth.entity.User;
-
+import com.ss.scrumptious.common_entities.entity.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+
+import java.util.UUID;
 
 
 @Component
@@ -19,7 +18,7 @@ public class UserAuthenticationManager {
     } catch (ClassCastException ex) {
       return false;
     }
-  } 
+  }
 
   public boolean customerIdMatches(Authentication authentication, UUID id) {
     try {

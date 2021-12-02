@@ -1,21 +1,11 @@
 package com.ss.scrumptious_auth.user;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.Date;
-import java.util.stream.Collectors;
-
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.ss.scrumptious.common_entities.entity.User;
+import com.ss.scrumptious.common_entities.entity.UserRole;
 import com.ss.scrumptious_auth.dao.UserRepository;
-import com.ss.scrumptious_auth.entity.User;
-import com.ss.scrumptious_auth.entity.UserRole;
 import com.ss.scrumptious_auth.security.SecurityConstants;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,6 +20,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import java.util.Date;
+import java.util.stream.Collectors;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -71,7 +70,7 @@ public class UserInformationTests {
     public void afterEach() {
         userRepository.deleteAll();
     }
-	
+
     @Test
     public void currentAccountTest() throws Exception {
 
@@ -81,7 +80,7 @@ public class UserInformationTests {
 			.password(encoder.encode("123"))
             .userRole(UserRole.ADMIN)
 			.build();
-		
+
         user = userRepository.save(user);
 
         String uuid = user.getId().toString();
@@ -90,7 +89,7 @@ public class UserInformationTests {
         		.stream()
         		.map(GrantedAuthority::getAuthority)
         		.collect(Collectors.joining(","));
-        
+
         String token = JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(securityConstants.getExpirationDate())
@@ -120,22 +119,22 @@ public class UserInformationTests {
 			.password(encoder.encode("teddy"))
             .userRole(UserRole.DRIVER)
 			.build();
-    
+
         User user2 = User.builder()
 			.email("mike@test.com")
 			.password(encoder.encode("aesdcfj"))
             .userRole(UserRole.CUSTOMER)
-			.build();  
-		
+			.build();
+
         userRepository.save(adminUser);
         userRepository.save(user1);
         userRepository.save(user2);
-       
+
         String authorites = adminUser.getAuthorities()
         		.stream()
         		.map(GrantedAuthority::getAuthority)
         		.collect(Collectors.joining(","));
-        
+
         String token = JWT.create()
                 .withSubject(adminUser.getUsername())
                 .withExpiresAt(securityConstants.getExpirationDate())
@@ -150,7 +149,7 @@ public class UserInformationTests {
         .andExpect(jsonPath("$.[1]email").value(user1.getEmail()))
         .andExpect(jsonPath("$.[1]id").value(user1.getId().toString()))
         .andExpect(jsonPath("$.[2]email").value(user2.getEmail()))
-        .andExpect(jsonPath("$.[2]id").value(user2.getId().toString()));  
+        .andExpect(jsonPath("$.[2]id").value(user2.getId().toString()));
 
     }
 

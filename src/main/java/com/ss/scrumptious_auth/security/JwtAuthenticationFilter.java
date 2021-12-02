@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ss.scrumptious.common_entities.entity.User;
 import com.ss.scrumptious_auth.dto.AuthResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ss.scrumptious_auth.entity.User;
+
 
 //@Slf4j
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
@@ -42,7 +43,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
      * Triggered when we issue POST request to /login
      * {
      * 		"username" : "bruno@gmail.com",
-     * 		"password" : "password" 
+     * 		"password" : "password"
      * }
      */
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
@@ -51,13 +52,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         LoginViewModel credentials = null;
         try {
 
-            
+
             // Create Login Token
             credentials = objectMapper.readValue(request.getInputStream(), LoginViewModel.class);
-          
+
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                     credentials.getUsername(), credentials.getPassword(), new ArrayList<>());
-            
+
             // Authenticate User
             Authentication auth = authenticationManager.authenticate(authenticationToken);
             return auth;
@@ -73,12 +74,12 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             Authentication authResult) throws IOException, ServletException {
     	// Grab Principal from Database
         User user = (User) authResult.getPrincipal();
-        
+
         String authorities = user.getAuthorities()
         		.stream()
         		.map(GrantedAuthority::getAuthority)
         		.collect(Collectors.joining(","));
-        
+
         // Create JWT Token
         String token = JWT.create()
         		.withSubject(user.getUsername())

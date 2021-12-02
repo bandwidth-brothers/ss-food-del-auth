@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import com.ss.scrumptious.common_entities.entity.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ss.scrumptious_auth.dto.CreateUserDto;
 import com.ss.scrumptious_auth.dto.EditUserDto;
-import com.ss.scrumptious_auth.entity.User;
-import com.ss.scrumptious_auth.entity.UserRole;
 import com.ss.scrumptious_auth.security.permissions.GetUserByIdPermission;
 import com.ss.scrumptious_auth.service.AuthAccountServiceImpl;
 
@@ -32,9 +31,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserAccountController {
 
-	
+
 	private final AuthAccountServiceImpl authAccountService;
-	
+
 
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
@@ -57,7 +56,7 @@ public class UserAccountController {
 	@PutMapping("/{userId}")
 	public ResponseEntity<User> editUserByUUID(@Valid @RequestBody EditUserDto editUserDto, @PathVariable UUID userId) {
 		User user = authAccountService.findUserById(userId);
-		
+
 			user.setEmail(editUserDto.getEmail());
 			user.setPassword(editUserDto.getPassword());
 		return ResponseEntity.ok(authAccountService.updateUser(user));

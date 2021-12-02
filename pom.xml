@@ -18,9 +18,18 @@
     </properties>
     <dependencies>
         <dependency>
+            <groupId>com.smoothstack</groupId>
+            <artifactId>ss-scrumptious-common_entities</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
             <version>1.4.8</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>com.auth0</groupId>
@@ -74,7 +83,7 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
         <!-- AWS -->
         <dependency>
     		<groupId>com.amazonaws</groupId>

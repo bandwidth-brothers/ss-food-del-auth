@@ -49,5 +49,5 @@ buildNumber.properties
 
 .idea/
 
-application-*.properties
+application-local.properties
 aws-config.properties
