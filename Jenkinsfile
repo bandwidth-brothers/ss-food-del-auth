@@ -26,14 +26,14 @@ pipeline{
                     echo """name ${files[0].name}; path:  ${files[0].path}; directory: ${files[0].directory}; length: ${files[0].length}; modified:  ${files[0].lastModified}"""
 
                     def readContent = readFile "${files[0].path}"
-                    writeFile file: "${files[0].path}", text: readContent+"\r\nspring.datasource.username=${DB_USERNAME}
+                    writeFile file: "${files[0].path}", text: readContent+"""\r\nspring.datasource.username=${DB_USERNAME}
                     \r\nspring.datasource.password=${DB_PASSWORD}
                     \r\nspring.datasource.url=${DB_ENDPOINT}
                     \r\namazon.s3.access.key=${AWS_ACCESSKEY}
                     \r\namazon.s3.secret.key=${AWS_SECRETKEY}
                     \r\namazon.s3.region.name=us-east-2
                     \r\namazon.s3.bucket.name=image-upload-scrumptious
-                    "
+                    """
 
                     def str=readFile file: "${files[0].path}"
                     echo str
