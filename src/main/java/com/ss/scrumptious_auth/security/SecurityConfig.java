@@ -20,6 +20,10 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -66,9 +70,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( HttpMethod.GET,"/auth/health").permitAll()
                 .antMatchers(HttpMethod.POST,"/login").permitAll()
                 .antMatchers("/h2-console/*").permitAll()
-//                .antMatchers("/api/test/*").permitAll()
-//                .antMatchers("/api/management/*").hasRole("MANAGER")
-//                .antMatchers("/api/admin/*").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .logout(logout -> logout
@@ -79,20 +80,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     ));
     }
 
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
+        config.addAllowedOrigin("*");
+        config.addAllowedMethod(HttpMethod.PUT);
+        config.addAllowedMethod(HttpMethod.DELETE);
+        source.registerCorsConfiguration("/**", config);
         return source;
     }
-
-
-
-	/*
-	 * @Bean PasswordEncoder passwordEncoder(){ return new BCryptPasswordEncoder();
-	 * }
-	 */
 
     @Bean
     DaoAuthenticationProvider authenticationProvider() {
